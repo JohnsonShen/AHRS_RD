@@ -24,6 +24,7 @@
 #endif
 #include "Timer_Ctrl.h"
 #include "AHRSLib.h"
+extern int update_time;
 typedef struct {
 	int lastTime;
 	int interval0;
@@ -78,7 +79,8 @@ void SysTick_Handler(void)
 #endif
 		FC_Last = frame_counter;
 	}
-
+  //if((tick_counter%1000)==0)
+  //  printf("update time:%d\n",update_time);
 	tick_counter++;
 	nvtMillisecondTick();
 }
