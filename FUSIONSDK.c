@@ -36,6 +36,7 @@
 #include "Calibrate.h"
 
 #define MAG_INTERVAL 4
+int update_time;
 void setupSystemClock()
 {
 #ifdef M451
@@ -117,6 +118,7 @@ void setup()
 	FlashInit();
 	nvtAHRSInit();
 	SensorsInit();
+  TIMER_Init();
 	printf("*System Ready\n");
 	printf("*Command List:\n");
 	printf("@ss - Stream Start, the default is Euler angle\n");
@@ -143,6 +145,9 @@ void CommandProcess()
 			}
 			else if (command == 'c') {// A 'c'calibration command
 				SensorCalibration();
+			}
+                        else if (command == 'b') {// 'b'lock erase flash
+				FlashControl();
 			}
 			else if (command == 'm') {// Set report 'm'ode
 				char mode = GetChar();
@@ -185,17 +190,20 @@ void CommandProcess()
 			printf("Unknown command.\n");
 		} // Skip character
 	}
-}
+} 
 // Main Control loop
 void loop()
 {
+  int current_time;
 	CommandProcess();
-	SensorsRead(SENSOR_ACC|SENSOR_GYRO|SENSOR_MAG/*|SENSOR_BARO*/,1);
+	SensorsRead(SENSOR_ACC|SENSOR_GYRO/*|SENSOR_MAG|SENSOR_BARO*/,1);
 
   while((GetSensorCalState()&&GYRO)==false) {
 		SensorsDynamicCalibrate(SENSOR_GYRO);
 	}
+ current_time = micros();
 		nvtUpdateAHRS(SENSOR_ACC|SENSOR_GYRO);
+ update_time = micros() - current_time;
 
 	if((GetFrameCount()%6)==0)
 		report_sensors();
