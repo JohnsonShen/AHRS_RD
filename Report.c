@@ -111,3 +111,6 @@ void report_sensors()
 		report_sensor_calibrated();
 	}
 }
+void report_calibration_factor()
+{
+}

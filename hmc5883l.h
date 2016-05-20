@@ -3,20 +3,20 @@
 // 6/12/2012 by Jeff Rowberg <jeff@rowberg.net>
 // Adapted to Cortex-M4 Fly Controller by Nuvoton
 // Updates should (hopefully) always be available at https://github.com/jrowberg/i2cdevlib
-/*================================================================================*
- * O     O          __             ______  __   __  ____     __  ___          __  *
- *  \   /      /\  / /_      _    / /___/ / /  / / / __ \   / / /   \    /\  / /  *
- *   [+]      /  \/ / \\    //   / /____ / /  / /  \ \_    / / | | | |  /  \/ /   *
- *  /   \    / /\  /   \\__//   / /----// /__/ /  \ \__ \ / /  | | | | / /\  /    *
- * O     O  /_/  \/     \__/   /_/      \_ ___/    \___ //_/    \___/ /_/  \/     *
+/*============================================================================*
+ * O     O          __                   ______  __                           *
+ *  \   /      /\  / /_      _    __    / /___/ / /_     _                    *
+ *   [+]      /  \/ / \\    //__ / /__ / /____ / / \\   //                    *
+ *  /   \    / /\  /   \\__// --/ /---/ /----// /   \\_//                     *
+ * O     O  /_/  \/     \__/    \_\/ /_/     /_/ ____/_/                      *
  *                                                                                *
  *                                                                                *
- * Nuvoton Sensor Fusion Application Firmware for Cortex M4 Series                *
+ * Multi-Rotor controller firmware for Nuvoton Cortex M4 series               *
  *                                                                                *
  * Written by by T.L. Shen for Nuvoton Technology.                                *
  * tlshen@nuvoton.com/tzulan611126@gmail.com                                      *
  *                                                                                *
- *================================================================================*
+ *============================================================================*
  */
 #ifndef HMC5883L_H_
 #define HMC5883L_H_

@@ -21,21 +21,20 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-===============================================*/
-/*================================================================================*
- * O     O          __             ______  __   __  ____     __  ___          __  *
- *  \   /      /\  / /_      _    / /___/ / /  / / / __ \   / / /   \    /\  / /  *
- *   [+]      /  \/ / \\    //   / /____ / /  / /  \ \_    / / | | | |  /  \/ /   *
- *  /   \    / /\  /   \\__//   / /----// /__/ /  \ \__ \ / /  | | | | / /\  /    *
- * O     O  /_/  \/     \__/   /_/      \_ ___/    \___ //_/    \___/ /_/  \/     *
- *                                                                                *
- *                                                                                *
- * Nuvoton Sensor Fusion Application Firmware for Cortex M4 Series                *
- *                                                                                *
- * Written by by T.L. Shen for Nuvoton Technology.                                *
- * tlshen@nuvoton.com/tzulan611126@gmail.com                                      *
- *                                                                                *
- *================================================================================*
+===============================================
+*/
+/*
+ * O     O          __                   ______  __
+ *  \   /      /\  / /_      _    __    / /___/ / /_     _
+ *   [+]      /  \/ / \\    //__ / /__ / /____ / / \\   //
+ *  /   \    / /\  /   \\__// --/ /---/ /----// /   \\_//
+ * O     O  /_/  \/     \__/    \_\/ /_/     /_/ ____/_/
+ *
+ * Multi-Rotor control firmware
+ *
+ * Written by by T.L. Shen for Nuvoton Technology.
+ * tlshen@nuvoton.com/tzulan611126@gmail.com
+ *
  */
 #include <stdbool.h>
 #ifndef _MPU6050_H_

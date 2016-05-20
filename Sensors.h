@@ -28,7 +28,12 @@ typedef struct {
 	bool GYRO_Done;
 	bool MAG_Done;
 }SensorInit_T;
-
+typedef struct {
+	bool ACC_FLASH;
+	bool GYRO_FLASH;
+	bool MAG_FLASH;
+	uint8_t MAG_QFACTOR;
+}CAL_FLASH_STATE_T;
 #if STACK_ACC
 #define ACC_OFFSET_X          36
 #define ACC_OFFSET_Y          -322
@@ -40,7 +45,7 @@ typedef struct {
 #define IMU_GYRO_FS_CFG       MPU6050_GYRO_FS_2000
 #define IMU_DEG_PER_LSB_CFG   MPU6050_DEG_PER_LSB_2000
 #define IMU_ACCEL_FS_CFG      MPU6050_ACCEL_FS_2
-#define IMU_G_PER_LSB_CFG     MPU6050_G_PER_LSB_2
+#define IMU_G_PER_LSB_CFG     MPU6050_G_PER_LSB_8
 #define IMU_1G_RAW           (int16_t)(1.0 / IMU_G_PER_LSB_CFG)
 #endif
 #else

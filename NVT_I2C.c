@@ -1,17 +1,17 @@
-/*================================================================================*
- * O     O          __             ______  __   __  ____     __  ___          __  *
- *  \   /      /\  / /_      _    / /___/ / /  / / / __ \   / / /   \    /\  / /  *
- *   [+]      /  \/ / \\    //   / /____ / /  / /  \ \_    / / | | | |  /  \/ /   *
- *  /   \    / /\  /   \\__//   / /----// /__/ /  \ \__ \ / /  | | | | / /\  /    *
- * O     O  /_/  \/     \__/   /_/      \_ ___/    \___ //_/    \___/ /_/  \/     *
+/*============================================================================*
+ * O     O          __                   ______  __                           *
+ *  \   /      /\  / /_      _    __    / /___/ / /_     _                    *
+ *   [+]      /  \/ / \\    //__ / /__ / /____ / / \\   //                    *
+ *  /   \    / /\  /   \\__// --/ /---/ /----// /   \\_//                     *
+ * O     O  /_/  \/     \__/    \_\/ /_/     /_/ ____/_/                      *
  *                                                                                *
  *                                                                                *
- * Nuvoton Sensor Fusion Application Firmware for Cortex M4 Series                *
+ * Multi-Rotor controller firmware for Nuvoton Cortex M4 series               *
  *                                                                                *
  * Written by by T.L. Shen for Nuvoton Technology.                                *
  * tlshen@nuvoton.com/tzulan611126@gmail.com                                      *
  *                                                                                *
- *================================================================================*
+ *============================================================================*
  */
 #include <stdio.h>
 #ifdef M451
@@ -50,11 +50,8 @@ extern void DelayMsec(unsigned int usec);
 #ifdef M451
 typedef void (*I2C_FUNC)(uint32_t u32Status);
 static volatile I2C_FUNC s_I2C0HandlerFn = NULL;
-
-/*---------------------------------------------------------------------------------------------------------*/
-/*  I2C0 IRQ Handler                                                                                       */
-/*---------------------------------------------------------------------------------------------------------*/
-void I2C1_IRQHandler(void)
+static volatile I2C_FUNC s_I2C1HandlerFn = NULL;
+void I2CX_IRQHandler(uint8_t id)
 {
 	uint32_t u32Status;
 
@@ -84,11 +81,25 @@ void I2C1_IRQHandler(void)
 				break;
 			}
 			default: {
+				if(id==0) {
 				if(s_I2C0HandlerFn != NULL)
 					s_I2C0HandlerFn(u32Status);
 			}	
+				else if(id==1) {
+					if(s_I2C1HandlerFn != NULL)
+						s_I2C1HandlerFn(u32Status);
 		}
 	}
+}
+	}
+}
+void I2C0_IRQHandler(void)
+{
+	I2CX_IRQHandler(0);
+}
+void I2C1_IRQHandler(void)
+{
+	I2CX_IRQHandler(1);
 }
 #endif
 
@@ -206,7 +217,7 @@ void I2C_Callback_Rx_Continue(uint32_t status)
     else if (status == 0x20)                /* SLA+W has been transmitted and NACK has been received */
     {
 #ifdef M451
-      I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_STA_STO_SI);
+      I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_STO_SI);
 #else
       DrvI2C_Ctrl(I2C_PORT, 0, 1, 1, 0);
 #endif
@@ -604,6 +615,8 @@ uint8_t NVT_WriteByteContinue_addr8(uint8_t address,uint8_t* data, uint8_t len)
 	ContinueLen=len+1;
 #ifdef M451
 	s_I2C0HandlerFn = (I2C_FUNC)I2C_Callback_Tx_Continue;
+	s_I2C1HandlerFn = (I2C_FUNC)I2C_Callback_Tx_Continue;
+	while(I2C_PORT->CTL & I2C_CTL_STO_Msk);
 	I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_STA);
 	WaitEndFlag0(1);
 #else
@@ -628,6 +641,8 @@ uint8_t NVT_ReadByteContinue_addr8(uint8_t address,uint8_t* data, uint8_t len, u
 	Tx_Data0[0] = address;
 #ifdef M451
 	s_I2C0HandlerFn = (I2C_FUNC)I2C_Callback_Rx_Continue;
+	s_I2C1HandlerFn = (I2C_FUNC)I2C_Callback_Rx_Continue;
+	while(I2C_PORT->CTL & I2C_CTL_STO_Msk);
 	I2C_SET_CONTROL_REG(I2C_PORT, I2C_CTL_STA);
 
 	WaitEndFlag0(timeout);
@@ -678,13 +693,8 @@ void NVT_I2C_Init()
 	SYS->GPE_MFPL &= ~SYS_GPE_MFPL_PE0MFP_Msk;
 	SYS->GPE_MFPL |= SYS_GPE_MFPL_PE0MFP_I2C1_SDA;
 #else
-	uint32_t u32data;
 	DrvGPIO_InitFunction(E_FUNC_I2C1);
 #endif
-#else
-	DrvGPIO_InitFunction(E_FUNC_I2C0);
-#endif
-	
 #ifdef M451
 	/* Open I2C module and set bus clock */
 	I2C_Open(I2C1, 400000);
@@ -706,6 +716,40 @@ void NVT_I2C_Init()
 	DrvI2C_InstallCallback(I2C_PORT, TIMEOUT, I2C_Callback_TimeOutError);
 	DrvI2C_InstallCallback(I2C_PORT, ARBITLOSS, I2C_Callback_ArbitLoss);
 #endif	
+#else /* Port 0*/
+#ifdef M451
+	GPIO_SetMode(PE, BIT12, GPIO_MODE_OUTPUT);
+	PE12=0;
+	DelayMsec(1);
+	CLK_EnableModuleClock(I2C0_MODULE);
+	/* Set I2C PA multi-function pins */
+	SYS->GPE_MFPH &= ~(SYS_GPE_MFPH_PE12MFP_Msk | SYS_GPE_MFPH_PE13MFP_Msk);
+	SYS->GPE_MFPH |= (SYS_GPE_MFPH_PE13MFP_I2C0_SDA | SYS_GPE_MFPH_PE12MFP_I2C0_SCL);
+#ifdef M451
+	/* Open I2C module and set bus clock */
+	I2C_Open(I2C0, 400000);
+
+	/* Get I2C1 Bus Clock */
+ printf("I2C clock %d Hz\n", I2C_GetBusClockFreq(I2C0));
+
+	/* Enable I2C interrupt */
+	I2C_EnableInt(I2C0);
+	NVIC_EnableIRQ(I2C0_IRQn);
+#else
+	/* Open I2C0 and I2C1, and set clock = 400Kbps */
+	DrvI2C_Open(I2C_PORT, 400000);
+	u32data = DrvI2C_GetClockFreq(I2C_PORT);
+	printf("I2C clock: %d Hz\n", u32data);
+	/* Enable I2C interrupt and set corresponding NVIC bit */
+	DrvI2C_EnableInt(I2C_PORT);
+	DrvI2C_InstallCallback(I2C_PORT, BUSERROR, I2C_Callback_BusError);
+	DrvI2C_InstallCallback(I2C_PORT, TIMEOUT, I2C_Callback_TimeOutError);
+	DrvI2C_InstallCallback(I2C_PORT, ARBITLOSS, I2C_Callback_ArbitLoss);
+#endif	
+#else
+	DrvGPIO_InitFunction(E_FUNC_I2C0);
+#endif
+#endif
 }
 
 void NVT_SetDeviceAddress(uint8_t devAddr)

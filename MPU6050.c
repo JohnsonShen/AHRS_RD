@@ -22,20 +22,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ===============================================
 */
-/*================================================================================*
- * O     O          __             ______  __   __  ____     __  ___          __  *
- *  \   /      /\  / /_      _    / /___/ / /  / / / __ \   / / /   \    /\  / /  *
- *   [+]      /  \/ / \\    //   / /____ / /  / /  \ \_    / / | | | |  /  \/ /   *
- *  /   \    / /\  /   \\__//   / /----// /__/ /  \ \__ \ / /  | | | | / /\  /    *
- * O     O  /_/  \/     \__/   /_/      \_ ___/    \___ //_/    \___/ /_/  \/     *
+/*============================================================================*
+ * O     O          __                   ______  __                           *
+ *  \   /      /\  / /_      _    __    / /___/ / /_     _                    *
+ *   [+]      /  \/ / \\    //__ / /__ / /____ / / \\   //                    *
+ *  /   \    / /\  /   \\__// --/ /---/ /----// /   \\_//                     *
+ * O     O  /_/  \/     \__/    \_\/ /_/     /_/ ____/_/                      *
  *                                                                                *
  *                                                                                *
- * Nuvoton Sensor Fusion Application Firmware for Cortex M4 Series                *
+ * Multi-Rotor controller firmware for Nuvoton Cortex M4 series               *
  *                                                                                *
  * Written by by T.L. Shen for Nuvoton Technology.                                *
  * tlshen@nuvoton.com/tzulan611126@gmail.com                                      *
  *                                                                                *
- *================================================================================*
+ *============================================================================*
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -277,9 +277,9 @@ bool MPU6050_initialize() {
 		MPU6050_setSleepEnabled(false); 
 		MPU6050_setClockSource(MPU6050_CLOCK_PLL_XGYRO);
 		MPU6050_setFullScaleGyroRange(MPU6050_GYRO_FS_2000);
-		MPU6050_setFullScaleAccelRange(MPU6050_ACCEL_FS_2);
+		MPU6050_setFullScaleAccelRange(MPU6050_ACCEL_FS_8);
 		MPU6050_setRate(1);
-		MPU6050_setDLPFMode(MPU6050_DLPF_BW_188);
+		MPU6050_setDLPFMode(MPU6050_DLPF_BW_42);
 #if defined(MPU6050_I2C_AUX_MASTER)
 		I2C_writeByte(devAddr, 0x37, 0x02); 
 		I2C_writeByte(devAddr, 0x6A, 0x20);             //USER_CTRL     -- DMP_EN=0 ; FIFO_EN=0 ; I2C_MST_EN=1 (I2C master mode) ; I2C_IF_DIS=0 ; FIFO_RESET=0 ; I2C_MST_RESET=0 ; SIG_COND_RESET=0

@@ -1,17 +1,17 @@
-/*================================================================================*
- * O     O          __             ______  __   __  ____     __  ___          __  *
- *  \   /      /\  / /_      _    / /___/ / /  / / / __ \   / / /   \    /\  / /  *
- *   [+]      /  \/ / \\    //   / /____ / /  / /  \ \_    / / | | | |  /  \/ /   *
- *  /   \    / /\  /   \\__//   / /----// /__/ /  \ \__ \ / /  | | | | / /\  /    *
- * O     O  /_/  \/     \__/   /_/      \_ ___/    \___ //_/    \___/ /_/  \/     *
+/*============================================================================*
+ * O     O          __                   ______  __                           *
+ *  \   /      /\  / /_      _    __    / /___/ / /_     _                    *
+ *   [+]      /  \/ / \\    //__ / /__ / /____ / / \\   //                    *
+ *  /   \    / /\  /   \\__// --/ /---/ /----// /   \\_//                     *
+ * O     O  /_/  \/     \__/    \_\/ /_/     /_/ ____/_/                      *
  *                                                                                *
  *                                                                                *
- * Nuvoton Sensor Fusion Application Firmware for Cortex M4 Series                *
+ * Multi-Rotor controller firmware for Nuvoton Cortex M4 series               *
  *                                                                                *
  * Written by by T.L. Shen for Nuvoton Technology.                                *
  * tlshen@nuvoton.com/tzulan611126@gmail.com                                      *
  *                                                                                *
- *================================================================================*
+ *============================================================================*
  */
 #ifndef DEF_H_
 #define DEF_H_
@@ -36,13 +36,16 @@
 /*                    Sensor Type definitions                   */
 /****************************************************************/
 
-#if defined(ADXL345) || defined(BMA020) || defined(BMA180) || defined(NUNCHACK) || defined(MMA7455) || defined(ADCACC) || defined(LIS3LV02) || defined(LSM303DLx_ACC) || defined(MPU6050) || defined(NUNCHUCK)
+#if defined(ADXL345) || defined(BMA020) || defined(BMA180) || defined(NUNCHACK) || defined(MMA7455) || defined(ADCACC) || defined(LIS3LV02) || defined(LSM303DLx_ACC) || defined(MPU6050) || defined(MPU6500) || defined(NUNCHUCK)
 #define STACK_ACC 1
-#ifdef MPU6050
-//#define ACC_ORIENTATION(X, Y, Z)  {Sensor.rawACC[0] = X; Sensor.rawACC[1] = Y; Sensor.rawACC[2] = Z;}
-//#define GYRO_ORIENTATION(X, Y, Z) {Sensor.rawGYRO[0] = X; Sensor.rawGYRO[1] = Y; Sensor.rawGYRO[2] = Z;}
+#if defined(MPU6050) || defined(MPU6500)
+#ifndef OPTION_RC
+#define ACC_ORIENTATION(X, Y, Z)  {Sensor.rawACC[0] = X; Sensor.rawACC[1] = Y; Sensor.rawACC[2] = Z;}
+#define GYRO_ORIENTATION(X, Y, Z) {Sensor.rawGYRO[0] = X; Sensor.rawGYRO[1] = Y; Sensor.rawGYRO[2] = Z;}
+#else
 #define ACC_ORIENTATION(X, Y, Z)  {Sensor.rawACC[0] = -X; Sensor.rawACC[1] = -Y; Sensor.rawACC[2] = Z;}
 #define GYRO_ORIENTATION(X, Y, Z) {Sensor.rawGYRO[0] = -X; Sensor.rawGYRO[1] = -Y; Sensor.rawGYRO[2] = Z;}
+#endif
 #endif
 #else
 #define STACK_ACC 0
