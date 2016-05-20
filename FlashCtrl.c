@@ -17,7 +17,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "retarget.h"
-#include "Report.h"
 #ifdef M451
 #include "M451Series.h"
 #else
@@ -358,27 +357,20 @@ void FlashControl()
 		char Part = GetChar();
 		if(Part=='a') {
 			UpdateFlashCal(SENSOR_ACC, true);
-			if (report_format == REPORT_FORMAT_TEXT) {
 			printf("ACC CalData Erased.\n");
-		}
 		}
 		else if(Part=='g') {
 			UpdateFlashCal(SENSOR_GYRO, true);
-			if (report_format == REPORT_FORMAT_TEXT) {
 			printf("GYRO CalData Erased.\n");
-		}
 		}
 		else if(Part=='m') {
 			UpdateFlashCal(SENSOR_MAG, true);
-			if (report_format == REPORT_FORMAT_TEXT) {
 			printf("MAG CalData Erased.\n");
-		}
 		}
 		else if(Part=='x') {
 			UpdateFlashCal(SENSOR_ACC, true);
 			UpdateFlashCal(SENSOR_GYRO, true);
 			UpdateFlashCal(SENSOR_MAG, true);
-			if (report_format == REPORT_FORMAT_TEXT) {
 			printf("Flash Data Erased.\n");
 		}
 	}

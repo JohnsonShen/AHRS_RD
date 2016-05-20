@@ -61,6 +61,7 @@ void GyroCalibration()
 {
 	const char axis_done = GetChar();
 	const char axis = axis_done - 0x78;
+	const char calibration_done = 'd';
 	
 	signed char status;
 	
@@ -72,9 +73,11 @@ void GyroCalibration()
 		status=nvtGyroScaleCalibrate(axis);	
 	} while(status==STATUS_GYRO_CAL_RUNNING);	
 	
-	if(status==STATUS_GYRO_AXIS_CAL_DONE) {
-		UpdateFlashCal(SENSOR_GYRO, false);
+	if(status==STATUS_GYRO_AXIS_CAL_DONE)
 		Serial_write((char*)&axis_done, 1);
+	else {
+		Serial_write((char*)&calibration_done, 1);
+		UpdateFlashCal(SENSOR_GYRO, false);
 	}
 }
 void MagCalibration()
