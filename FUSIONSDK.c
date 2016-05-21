@@ -1,12 +1,14 @@
 /*================================================================================*
- * O     O          __             ______  __   __  ____     __  ___          __  *
- *  \   /      /\  / /_      _    / /___/ / /  / / / __ \   / / /   \    /\  / /  *
- *   [+]      /  \/ / \\    //   / /____ / /  / /  \ \_    / / | | | |  /  \/ /   *
- *  /   \    / /\  /   \\__//   / /----// /__/ /  \ \__ \ / /  | | | | / /\  /    *
- * O     O  /_/  \/     \__/   /_/      \_ ___/    \___ //_/    \___/ /_/  \/     *
+ *                                                                                *
+ *            _    _ _____   _____   ______         _                             *
+ *      /\   | |  | |  __ \ / ____| |  ____|       (_)                            *
+ *     /  \  | |__| | |__) | (___   | |__ _   _ ___ _  ___  _ __                  *
+ *    / /\ \ |  __  |  _  / \___ \  |  __| | | / __| |/ _ \| '_ \                 *
+ *   / ____ \| |  | | | \ \ ____) | | |  | |_| \__ \ | (_) | | | |                *
+ *  /_/    \_\_|  |_|_|  \_\_____/  |_|   \__,_|___/_|\___/|_| |_|                *
  *                                                                                *
  *                                                                                *
- * Nuvoton Sensor Fusion Application Firmware for Cortex M4 Series                *
+ * Nuvoton A.H.R.S Library for Cortex M4 Series                                   *
  *                                                                                *
  * Written by by T.L. Shen for Nuvoton Technology.                                *
  * tlshen@nuvoton.com/tzulan611126@gmail.com                                      *
@@ -34,7 +36,7 @@
 #include "Sensors.h"
 #include "Report.h"
 #include "Calibrate.h"
-
+#include "LED.h"
 #define MAG_INTERVAL 4
 int update_time;
 void setupSystemClock()
@@ -198,8 +200,9 @@ void loop()
 	CommandProcess();
 	SensorsRead(SENSOR_ACC|SENSOR_GYRO/*|SENSOR_MAG|SENSOR_BARO*/,1);
 
-  while((GetSensorCalState()&&GYRO)==false) {
-		SensorsDynamicCalibrate(SENSOR_GYRO);
+  	if(ChronographRead(ChronRC)>= OUTPUT_RC_INTERVAL) {
+		SensorsDynamicCalibrate(SENSOR_GYRO|SENSOR_MAG);
+		ChronographSet(ChronRC);
 	}
  current_time = micros();
 		nvtUpdateAHRS(SENSOR_ACC|SENSOR_GYRO);
@@ -209,6 +212,8 @@ void loop()
 		report_sensors();
 	
 	IncFrameCount(1);
+if((GetFrameCount()%12)==0)
+		UpdateLED();
 }
 
 /*-----------------------------------------------------------------------------------*/

@@ -1,17 +1,19 @@
-/*============================================================================*
- * O     O          __                   ______  __                           *
- *  \   /      /\  / /_      _    __    / /___/ / /_     _                    *
- *   [+]      /  \/ / \\    //__ / /__ / /____ / / \\   //                    *
- *  /   \    / /\  /   \\__// --/ /---/ /----// /   \\_//                     *
- * O     O  /_/  \/     \__/    \_\/ /_/     /_/ ____/_/                      *
+/*================================================================================*
+ *                                                                                *
+ *            _    _ _____   _____   ______         _                             *
+ *      /\   | |  | |  __ \ / ____| |  ____|       (_)                            *
+ *     /  \  | |__| | |__) | (___   | |__ _   _ ___ _  ___  _ __                  *
+ *    / /\ \ |  __  |  _  / \___ \  |  __| | | / __| |/ _ \| '_ \                 *
+ *   / ____ \| |  | | | \ \ ____) | | |  | |_| \__ \ | (_) | | | |                *
+ *  /_/    \_\_|  |_|_|  \_\_____/  |_|   \__,_|___/_|\___/|_| |_|                *
  *                                                                                *
  *                                                                                *
- * Multi-Rotor controller firmware for Nuvoton Cortex M4 series               *
+ * Nuvoton A.H.R.S Library for Cortex M4 Series                                   *
  *                                                                                *
  * Written by by T.L. Shen for Nuvoton Technology.                                *
  * tlshen@nuvoton.com/tzulan611126@gmail.com                                      *
  *                                                                                *
- *============================================================================*
+ *================================================================================*
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,6 +23,7 @@
 #include "FlashCtrl.h"
 #include "Sensors.h"
 #include "Report.h"
+#include "LED.h"
 void CalibrationFail()
 {
 	const char fail = 'f';
@@ -69,7 +72,9 @@ void GyroCalibration()
 	do {
 		SensorsRead(SENSOR_GYRO,1);
 		DelayMsec(16);
-		status=nvtGyroScaleCalibrate(axis);	
+		status=nvtGyroScaleCalibrate(axis);
+    led_arm_state(LED_STATE_TOGGLE);
+UpdateLED();	
 	} while(status==STATUS_GYRO_CAL_RUNNING);	
 	
 	if(status==STATUS_GYRO_AXIS_CAL_DONE) {

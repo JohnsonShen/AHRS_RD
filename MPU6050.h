@@ -23,18 +23,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ===============================================
 */
-/*
- * O     O          __                   ______  __
- *  \   /      /\  / /_      _    __    / /___/ / /_     _
- *   [+]      /  \/ / \\    //__ / /__ / /____ / / \\   //
- *  /   \    / /\  /   \\__// --/ /---/ /----// /   \\_//
- * O     O  /_/  \/     \__/    \_\/ /_/     /_/ ____/_/
- *
- * Multi-Rotor control firmware
- *
- * Written by by T.L. Shen for Nuvoton Technology.
- * tlshen@nuvoton.com/tzulan611126@gmail.com
- *
+/*================================================================================*
+ *                                                                                *
+ *            _    _ _____   _____   ______         _                             *
+ *      /\   | |  | |  __ \ / ____| |  ____|       (_)                            *
+ *     /  \  | |__| | |__) | (___   | |__ _   _ ___ _  ___  _ __                  *
+ *    / /\ \ |  __  |  _  / \___ \  |  __| | | / __| |/ _ \| '_ \                 *
+ *   / ____ \| |  | | | \ \ ____) | | |  | |_| \__ \ | (_) | | | |                *
+ *  /_/    \_\_|  |_|_|  \_\_____/  |_|   \__,_|___/_|\___/|_| |_|                *
+ *                                                                                *
+ *                                                                                *
+ * Nuvoton A.H.R.S Library for Cortex M4 Series                                   *
+ *                                                                                *
+ * Written by by T.L. Shen for Nuvoton Technology.                                *
+ * tlshen@nuvoton.com/tzulan611126@gmail.com                                      *
+ *                                                                                *
+ *================================================================================*
  */
 #include <stdbool.h>
 #ifndef _MPU6050_H_

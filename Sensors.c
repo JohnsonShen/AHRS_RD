@@ -1,12 +1,14 @@
 /*================================================================================*
- * O     O          __             ______  __   __  ____     __  ___          __  *
- *  \   /      /\  / /_      _    / /___/ / /  / / / __ \   / / /   \    /\  / /  *
- *   [+]      /  \/ / \\    //   / /____ / /  / /  \ \_    / / | | | |  /  \/ /   *
- *  /   \    / /\  /   \\__//   / /----// /__/ /  \ \__ \ / /  | | | | / /\  /    *
- * O     O  /_/  \/     \__/   /_/      \_ ___/    \___ //_/    \___/ /_/  \/     *
+ *                                                                                *
+ *            _    _ _____   _____   ______         _                             *
+ *      /\   | |  | |  __ \ / ____| |  ____|       (_)                            *
+ *     /  \  | |__| | |__) | (___   | |__ _   _ ___ _  ___  _ __                  *
+ *    / /\ \ |  __  |  _  / \___ \  |  __| | | / __| |/ _ \| '_ \                 *
+ *   / ____ \| |  | | | \ \ ____) | | |  | |_| \__ \ | (_) | | | |                *
+ *  /_/    \_\_|  |_|_|  \_\_____/  |_|   \__,_|___/_|\___/|_| |_|                *
  *                                                                                *
  *                                                                                *
- * Nuvoton Sensor Fusion Application Firmware for Cortex M4 Series                *
+ * Nuvoton A.H.R.S Library for Cortex M4 Series                                   *
  *                                                                                *
  * Written by by T.L. Shen for Nuvoton Technology.                                *
  * tlshen@nuvoton.com/tzulan611126@gmail.com                                      *
@@ -117,9 +119,9 @@ void SensorInitGYRO()
 			GyroOffset[0] = Cal[0];
 			GyroOffset[1] = Cal[1];
 			GyroOffset[2] = Cal[2];
-			GyroScale[0]  = Cal[3]*IMU_DEG_PER_LSB_CFG;
-			GyroScale[1]  = Cal[4]*IMU_DEG_PER_LSB_CFG;
-			GyroScale[2]  = Cal[5]*IMU_DEG_PER_LSB_CFG;
+			GyroScale[0]  = Cal[3];
+			GyroScale[1]  = Cal[4];
+			GyroScale[2]  = Cal[5];
 			printf("GYRO calibration from [FLASH]\n");
 			
 		}
@@ -127,9 +129,9 @@ void SensorInitGYRO()
 			GyroOffset[0] = 0;
 			GyroOffset[1] = 0;
 			GyroOffset[2] = 0;
-			GyroScale[0] = IMU_DEG_PER_LSB_CFG;
-			GyroScale[1] = IMU_DEG_PER_LSB_CFG;
-			GyroScale[2] = IMU_DEG_PER_LSB_CFG;
+			GyroScale[0] = 1.0;
+			GyroScale[1] = 1.0;
+			GyroScale[2] = 1.0;
 			printf("GYRO calibration from - [DEFAULT]\n");
 		}
 		printf("Offset: %f  %f  %f\n", GyroOffset[0], GyroOffset[1], GyroOffset[2]);
@@ -298,7 +300,7 @@ void SensorsDynamicCalibrate(char SensorType)
 #endif
 #if STACK_GYRO
 	if(SensorType&SENSOR_GYRO&&SensorInitState.GYRO_Done) {
-		if(!SensorCalState.GYRO_Done) {
+		if(1/*!SensorCalState.GYRO_Done*/) {
 			if(nvtGyroCenterCalibrate()!=STATUS_GYRO_CAL_DONE)
 				led_arm_state(LED_STATE_TOGGLE);
 			else {

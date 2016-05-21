@@ -1,12 +1,14 @@
 /*================================================================================*
- * O     O          __             ______  __   __  ____     __  ___          __  *
- *  \   /      /\  / /_      _    / /___/ / /  / / / __ \   / / /   \    /\  / /  *
- *   [+]      /  \/ / \\    //   / /____ / /  / /  \ \_    / / | | | |  /  \/ /   *
- *  /   \    / /\  /   \\__//   / /----// /__/ /  \ \__ \ / /  | | | | / /\  /    *
- * O     O  /_/  \/     \__/   /_/      \_ ___/    \___ //_/    \___/ /_/  \/     *
+ *                                                                                *
+ *            _    _ _____   _____   ______         _                             *
+ *      /\   | |  | |  __ \ / ____| |  ____|       (_)                            *
+ *     /  \  | |__| | |__) | (___   | |__ _   _ ___ _  ___  _ __                  *
+ *    / /\ \ |  __  |  _  / \___ \  |  __| | | / __| |/ _ \| '_ \                 *
+ *   / ____ \| |  | | | \ \ ____) | | |  | |_| \__ \ | (_) | | | |                *
+ *  /_/    \_\_|  |_|_|  \_\_____/  |_|   \__,_|___/_|\___/|_| |_|                *
  *                                                                                *
  *                                                                                *
- * Nuvoton Sensor Fusion Application Firmware for Cortex M4 Series                *
+ * Nuvoton A.H.R.S Library for Cortex M4 Series                                   *
  *                                                                                *
  * Written by by T.L. Shen for Nuvoton Technology.                                *
  * tlshen@nuvoton.com/tzulan611126@gmail.com                                      *
@@ -41,10 +43,10 @@ typedef struct {
 #define ACC_SCALE_X           0.000061f
 #define ACC_SCALE_Y           0.000061f
 #define ACC_SCALE_Z           0.000061f
-#ifdef MPU6050
+#if defined(MPU6050) || defined(MPU6500)
 #define IMU_GYRO_FS_CFG       MPU6050_GYRO_FS_2000
 #define IMU_DEG_PER_LSB_CFG   MPU6050_DEG_PER_LSB_2000
-#define IMU_ACCEL_FS_CFG      MPU6050_ACCEL_FS_2
+#define IMU_ACCEL_FS_CFG      MPU6050_ACCEL_FS_8
 #define IMU_G_PER_LSB_CFG     MPU6050_G_PER_LSB_8
 #define IMU_1G_RAW           (int16_t)(1.0 / IMU_G_PER_LSB_CFG)
 #endif
