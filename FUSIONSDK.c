@@ -123,7 +123,7 @@ void setup()
   TIMER_Init();
 	printf("*System Ready\n");
 	printf("*Command List:\n");
-	printf("@ss - Stream Start, the default is Euler angle\n");
+	printf("@ss - Stream Start, the default is Euler angle: Roll Pitch Yaw\n");
 	printf("@st - Stream Toggle\n");
 	printf("@me - Display mode: euler angle\n");
 	printf("@mr - Display mode: raw data of sensors\n");

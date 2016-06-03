@@ -35,7 +35,7 @@ typedef struct {
 Chronograph_T Chronograph[NumCron];
 
 float UPDATE_DT;
-uint32_t tick_counter = 0;
+volatile uint32_t tick_counter = 0;
 uint32_t frame_counter = 0;
 uint32_t GPABCallback_Counter=0;
 
