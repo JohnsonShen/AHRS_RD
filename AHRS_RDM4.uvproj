@@ -516,6 +516,11 @@
               <FileType>1</FileType>
               <FilePath>.\retargetM4.c</FilePath>
             </File>
+            <File>
+              <FileName>arm_cortexM4lf_math.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\..\..\Library\CMSIS\Lib\ARM\arm_cortexM4lf_math.lib</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

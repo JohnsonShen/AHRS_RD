@@ -27,19 +27,24 @@ char stream_mode = STREAM_PAUSE;
 
 void report_ahrs_euler()
 {
-	float Euler[3];
+	float Euler[3],Altitude;
 	
 	nvtGetEulerRPY(Euler);
-
+#if STACK_BARO
+	Altitude = GetBaroAltitude();
+#else
+	Altitude = 0;
+#endif
 	if (report_format == REPORT_FORMAT_BINARY) {
 		float rpy[4];  
 		rpy[0] = Euler[0];
 		rpy[1] = Euler[1];
 		rpy[2] = Euler[2];
-		Serial_write((char*)rpy, 12);
+		rpy[3] = Altitude;
+		Serial_write((char*)rpy, 16);
 	}
 	else if (report_format == REPORT_FORMAT_TEXT)
-		printf("@RPYA:%f,%f,%f\n",Euler[0],Euler[1],Euler[2]);
+		printf("@RPYA:%f,%f,%f,%f\n",Euler[0],Euler[1],Euler[2],Altitude);
 }
 void report_ahrs_quaternion()
 {

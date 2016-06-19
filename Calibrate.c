@@ -36,12 +36,12 @@ void AccCalibration()
 	char side = atoi(&direction);
 	signed char status;
 	
-	if (direction == 'x')
+	if (direction == 'z')
 		side = 0;
 	else
 		side = atoi(&direction);
 	
-	if ((direction == '0')||(direction == 'x'))
+	if ((direction == '0')||(direction == 'z'))
 		nvtCalACCInit();
 	
 	do {
@@ -51,7 +51,7 @@ void AccCalibration()
 	}while(status==STATUS_BUFFER_NOT_FILLED);
 	
 	if(status==STATUS_BUFFER_FILLED) {
-		if (direction == 'x')
+		if (direction == 'z')
 			UpdateFlashCal(SENSOR_ACC, false);
 		Serial_write((char*)&direction, 1);
 	}

@@ -87,4 +87,6 @@ void temperatureRead(float *temperatureOut);
 void SensorsInit(void);
 char GetSensorInitState(void);
 char GetSensorCalState(void);
+void DisplayCalACC(void);
+void DisplayCalGYRO(void);
 #endif

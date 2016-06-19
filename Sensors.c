@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <math.h>
 #ifdef M451
+#include "M451Series.h"
 #else
 #include "NUC1xx.h"
 #endif
@@ -55,6 +56,16 @@ void temperatureRead(float *temperatureOut)
 #if defined(MPU6050) || defined(MPU6500)
 #endif
 #endif
+void DisplayCalACC()
+{
+  printf("ACC Offset: %f  %f  %f\n", AccOffset[0], AccOffset[1], AccOffset[2]);
+  printf("ACC Scale: %f  %f  %f\n", AccScale[0], AccScale[1], AccScale[2]);
+}
+void DisplayCalGYRO()
+{
+  printf("GYRO Offset: %f  %f  %f\n", GyroOffset[0], GyroOffset[1], GyroOffset[2]);
+  printf("GYRO Scale: %f  %f  %f\n", GyroScale[0], GyroScale[1], GyroScale[2]);
+}
 /* Sensors Init */
 void SensorInitACC()
 {
@@ -96,8 +107,12 @@ void SensorInitACC()
 	nvtSetAccOffset(AccOffset);
 	nvtSetAccG_PER_LSB(IMU_G_PER_LSB_CFG);
 }
-	else
-		printf("ACC connect      - [FAIL]\n");
+	else {
+    __disable_irq();
+    SYS_UnlockReg();
+    SYS_ResetChip();
+    printf("ACC connect      - [FAIL]\n");
+  }
 }
 void SensorInitGYRO()
 {
@@ -229,11 +244,13 @@ void SensorsInit()
 void SensorReadACC()
 {
 #if STACK_ACC
-	int16_t rawACC[3];
+	int16_t rawACC[3];//,rawGYRO[3];
 #if defined(MPU6050) || defined(MPU6500)
 	MPU6050_getAcceleration(&rawACC[0],&rawACC[1], &rawACC[2]);
+  //MPU6050_getMotion6(&rawACC[0],&rawACC[1], &rawACC[2],&rawGYRO[0],&rawGYRO[1], &rawGYRO[2]);
 #endif
 	ACC_ORIENTATION(rawACC[0],rawACC[1],rawACC[2]);
+  //GYRO_ORIENTATION(rawGYRO[0],rawGYRO[1],rawGYRO[2]);
 #endif
 }
 

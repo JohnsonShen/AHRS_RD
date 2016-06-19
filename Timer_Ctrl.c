@@ -40,7 +40,11 @@ uint32_t frame_counter = 0;
 uint32_t GPABCallback_Counter=0;
 
 volatile uint32_t u32Timer0Cnt=0, u32Timer1Cnt=0, u32Timer2Cnt=0, u32Timer3Cnt=0;
-
+bool beDisplayLoopTime = 0;
+void SetDisplayLoopTime(bool display) 
+{
+  beDisplayLoopTime = display;
+}
 void Delay(uint32_t delayCnt)
 {
 	while(delayCnt--) {
@@ -76,9 +80,9 @@ void SysTick_Handler(void)
 	if((tick_counter%1000)==0) {
 		freqCount=frame_counter-FC_Last;
 		UPDATE_DT = (float)(1.0f/freqCount);
-#if DISPLAY_LOOP_TIME
-		printf("FC:%d\n",freqCount);
-#endif
+    if(beDisplayLoopTime) {
+      printf("FC:%d\n",freqCount);
+    }
 		FC_Last = frame_counter;
 	}
   //if((tick_counter%1000)==0)

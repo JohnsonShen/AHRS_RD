@@ -18,6 +18,7 @@
 #ifndef _TIMER_CTRL_H
 #define _TIMER_CTRL_H
 #include <stdint.h>
+#include "Def.h"
 #define configTICK_RATE_HZ    1000 
 #define ChronMain 0
 #define ChronMAG  1 
@@ -42,4 +43,5 @@ uint32_t millis(void);
 void TIMER_Init(void);
 void TIMER_Enable(char enable);
 float getUpdateDT(void);
+void SetDisplayLoopTime(bool display);
 #endif
