@@ -135,7 +135,7 @@ void DisplayCommandList()
   printf("@bea - Block Erase Acc, reset ACC calibration\n"); DelayMsec(10);
   printf("@beg - Block Erase Gyro, reset Gyro calibration\n"); DelayMsec(10);
   printf("@fb  - Format Binary, switch display format to binary (GUI protocol)\n"); DelayMsec(10);
-  printf("@fb  - Format Text, switch display format to text\n"); DelayMsec(10);
+  printf("@ft  - Format Text, switch display format to text\n"); DelayMsec(10);
   printf("@da  - Display ACC, display ACC calibration parameters\n"); DelayMsec(10);
   printf("@dg  - Display GYRO, display GYRO calibration parameters\n"); DelayMsec(10);
   printf("@dln - Display Loop On, display loop spped on\n"); DelayMsec(10);
@@ -205,6 +205,9 @@ void CommandProcess()
 				}
 				else if (mode == 'r') {// Report sensor 'r'aw data
 					report_mode = REPORT_SENSORS_RAW;
+				}
+        else if (mode == 'r') {// Report sensor 'c'alibrated data
+					report_mode = REPORT_SENSORS_CALIBRATED;
 				}
 			}
 			else if (command == 'f') {// Set report 'f'ormat
