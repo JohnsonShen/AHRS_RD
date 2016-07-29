@@ -152,6 +152,7 @@ void setup()
 	I2C_Init();
 	FlashInit();
 	nvtAHRSInit();
+  nvtSetGyroDeviationTH(200);
 	SensorsInit();
   TIMER_Init();
 	DisplayCommandList();
@@ -252,6 +253,7 @@ void loop()
 		ChronographSet(ChronRC);
 	}
  current_time = micros();
+  if(GetSensorCalState()&(1<<GYRO))
 		nvtUpdateAHRS(SENSOR_ACC|SENSOR_GYRO);
  update_time = micros() - current_time;
 

@@ -278,7 +278,7 @@ bool MPU6050_initialize() {
 		DelayMsec(4);
 		MPU6050_setSleepEnabled(false); 
 		MPU6050_setClockSource(MPU6050_CLOCK_PLL_XGYRO);
-		MPU6050_setFullScaleGyroRange(MPU6050_GYRO_FS_2000);
+		MPU6050_setFullScaleGyroRange(MPU6050_GYRO_FS_250);
 		MPU6050_setFullScaleAccelRange(MPU6050_ACCEL_FS_8);
 		MPU6050_setRate(1);
 		MPU6050_setDLPFMode(MPU6050_DLPF_BW_42);
