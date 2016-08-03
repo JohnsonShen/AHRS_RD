@@ -207,7 +207,7 @@ void CommandProcess()
 				else if (mode == 'r') {// Report sensor 'r'aw data
 					report_mode = REPORT_SENSORS_RAW;
 				}
-        else if (mode == 'r') {// Report sensor 'c'alibrated data
+                                else if (mode == 'c') {// Report sensor 'c'alibrated data
 					report_mode = REPORT_SENSORS_CALIBRATED;
 				}
 			}
