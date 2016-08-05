@@ -321,11 +321,9 @@ void SensorsDynamicCalibrate(char SensorType)
 			if(nvtGyroCenterCalibrate()!=STATUS_GYRO_CAL_DONE)
 				led_arm_state(LED_STATE_TOGGLE);
 			else {
-				float GyroMean[3];
-				
 				SensorCalState.GYRO_Done = true;
 				led_arm_state(LED_STATE_OFF);
-				nvtGetGyroOffset(GyroMean);
+				nvtGetGyroOffset(GyroOffset);
 			}
 		}
 	}

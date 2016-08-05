@@ -152,7 +152,7 @@ void setup()
 	I2C_Init();
 	FlashInit();
 	nvtAHRSInit();
-  nvtSetGyroDeviationTH(200);
+  nvtSetGyroDeviationTH(50);
 	SensorsInit();
   TIMER_Init();
 	DisplayCommandList();

@@ -64,10 +64,12 @@ void report_ahrs_quaternion()
 void report_sensor_raw()
 {
 	int16_t RawACC[3], RawGYRO[3], RawMAG[3];
+  float dev;
 	
 	nvtGetSensorRawACC(RawACC);
 	nvtGetSensorRawGYRO(RawGYRO);
 	nvtGetSensorRawMAG(RawMAG);
+  dev = nvtGetGyroDeviation();
 
 	if (report_format == REPORT_FORMAT_BINARY) {
 		Serial_write((char*)RawACC, 6);
@@ -77,7 +79,7 @@ void report_sensor_raw()
 	else if (report_format == REPORT_FORMAT_TEXT) {
 		printf("@rA:%d,%d,%d  ",RawACC[0],RawACC[1],RawACC[2]);
 		printf("@rG:%d,%d,%d  ",RawGYRO[0],RawGYRO[1],RawGYRO[2]);
-		printf("@rM:%d,%d,%d  \n",RawMAG[0],RawMAG[1],RawMAG[2]);
+		printf("@rM:%d,%d,%d     %f\n",RawMAG[0],RawMAG[1],RawMAG[2],dev);
 	}
 }
 

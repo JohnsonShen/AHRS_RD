@@ -282,7 +282,7 @@ bool MPU6050_initialize() {
 		MPU6050_setFullScaleGyroRange(IMU_GYRO_FS_CFG);
 		MPU6050_setFullScaleAccelRange(MPU6050_ACCEL_FS_8);
 		MPU6050_setRate(1);
-		MPU6050_setDLPFMode(MPU6050_DLPF_BW_42);
+		MPU6050_setDLPFMode(MPU6050_DLPF_BW_5);
 #if defined(MPU6050_I2C_AUX_MASTER)
 		I2C_writeByte(devAddr, 0x37, 0x02); 
 		I2C_writeByte(devAddr, 0x6A, 0x20);             //USER_CTRL     -- DMP_EN=0 ; FIFO_EN=0 ; I2C_MST_EN=1 (I2C master mode) ; I2C_IF_DIS=0 ; FIFO_RESET=0 ; I2C_MST_RESET=0 ; SIG_COND_RESET=0
