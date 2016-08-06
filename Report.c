@@ -24,7 +24,7 @@
 char report_mode = REPORT_AHRS_EULER;
 char report_format = REPORT_FORMAT_TEXT;
 char stream_mode = STREAM_PAUSE;
-
+char Start = '@';
 void report_ahrs_euler()
 {
 	float Euler[3],Altitude;
@@ -41,7 +41,12 @@ void report_ahrs_euler()
 		rpy[1] = Euler[1];
 		rpy[2] = Euler[2];
 		rpy[3] = Altitude;
-		Serial_write((char*)rpy, 16);
+    Serial_write(&Start, 1);
+		//Serial_write((char*)rpy, 16);
+    Serial_write((char*)&rpy[0], 4);
+		Serial_write((char*)&rpy[1], 4);
+		Serial_write((char*)&rpy[2], 4);
+		Serial_write((char*)&rpy[3], 4);
 	}
 	else if (report_format == REPORT_FORMAT_TEXT)
 		printf("@RPYA:%f,%f,%f,%f\n",Euler[0],Euler[1],Euler[2],Altitude);
@@ -52,6 +57,7 @@ void report_ahrs_quaternion()
 	nvtGetQuaternion(Quaternion);
 	
 	if (report_format == REPORT_FORMAT_BINARY) {
+    Serial_write(&Start, 1);
 		Serial_write((char*)&Quaternion[0], 4);
 		Serial_write((char*)&Quaternion[1], 4);
 		Serial_write((char*)&Quaternion[2], 4);
