@@ -257,7 +257,7 @@ void loop()
 		nvtUpdateAHRS(SENSOR_ACC|SENSOR_GYRO);
  update_time = micros() - current_time;
 
-	if((GetFrameCount()%20)==0)
+	if((GetFrameCount()%50)==0)
 		report_sensors();
 	
 	IncFrameCount(1);
