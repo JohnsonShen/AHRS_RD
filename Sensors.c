@@ -23,6 +23,7 @@
 #include "NUC1xx.h"
 #endif
 #include "MPU6050.h"
+#include "SparkFunLSM6DS3.h"
 #include "hmc5883l.h"
 #include "ak8975.h"
 #include "Sensors.h"
@@ -71,10 +72,21 @@ void SensorInitACC()
 {
 	float Cal[ACC_CAL_DATA_SIZE];
 	bool FlashValid;
+#if defined(LSM6DS3)
+  status_t status;
+#endif
 	
 	if(!SensorInitState.ACC_Done) {
 #if defined(MPU6050) || defined(MPU6500)
 		SensorInitState.ACC_Done = MPU6050_initialize();
+		SensorInitState.GYRO_Done = SensorInitState.ACC_Done;
+#else
+    LSM6DS3_init();
+    status = begin();
+    if(status==0)
+      SensorInitState.ACC_Done = true;
+    else
+      SensorInitState.ACC_Done = false;
 		SensorInitState.GYRO_Done = SensorInitState.ACC_Done;
 #endif
 	}
@@ -105,7 +117,7 @@ void SensorInitACC()
 	printf("Scale: %f  %f  %f\n", AccScale[0], AccScale[1], AccScale[2]);
 	nvtSetAccScale(AccScale);
 	nvtSetAccOffset(AccOffset);
-	nvtSetAccG_PER_LSB(IMU_G_PER_LSB_CFG);
+	nvtSetAccG_PER_LSB(calcAccel(1)/*IMU_G_PER_LSB_CFG*/);
 }
 	else {
     __disable_irq();
@@ -122,6 +134,8 @@ void SensorInitGYRO()
 #if defined(MPU6050) || defined(MPU6500)
 		SensorInitState.GYRO_Done = MPU6050_initialize();
 		SensorInitState.ACC_Done = SensorInitState.GYRO_Done;
+#else
+
 #endif
 	}
 
@@ -153,7 +167,12 @@ void SensorInitGYRO()
 		printf("Scale: %f  %f  %f\n", GyroScale[0], GyroScale[1], GyroScale[2]);
 		nvtSetGyroScale(GyroScale);
 		nvtSetGyroOffset(GyroOffset);
+
+#if defined(MPU6050) || defined(MPU6500)
 		nvtSetGYRODegPLSB(IMU_DEG_PER_LSB_CFG);
+#else
+    nvtSetGYRODegPLSB(calcGyro(1));
+#endif
 	}
 	else
 		printf("GYRO connect     - [FAIL]\n");
@@ -248,6 +267,10 @@ void SensorReadACC()
 #if defined(MPU6050) || defined(MPU6500)
 	MPU6050_getAcceleration(&rawACC[0],&rawACC[1], &rawACC[2]);
   //MPU6050_getMotion6(&rawACC[0],&rawACC[1], &rawACC[2],&rawGYRO[0],&rawGYRO[1], &rawGYRO[2]);
+#else
+  rawACC[0] = readRawAccelX();
+  rawACC[1] = readRawAccelY();
+  rawACC[2] = readRawAccelZ();
 #endif
 	ACC_ORIENTATION(rawACC[0],rawACC[1],rawACC[2]);
   //GYRO_ORIENTATION(rawGYRO[0],rawGYRO[1],rawGYRO[2]);
@@ -260,6 +283,10 @@ void SensorReadGYRO()
 	int16_t rawGYRO[3];
 #if defined(MPU6050) || defined(MPU6500)
 	MPU6050_getRotation(&rawGYRO[0],&rawGYRO[1], &rawGYRO[2]);
+#else
+  rawGYRO[0] = readRawGyroX();
+  rawGYRO[1] = readRawGyroY();
+  rawGYRO[2] = readRawGyroZ();
 #endif
 	GYRO_ORIENTATION(rawGYRO[0],rawGYRO[1],rawGYRO[2]);
 	//printf("Raw GYRO:%d %d %d\n",Sensor.rawGYRO[0], Sensor.rawGYRO[1], Sensor.rawGYRO[2]);

@@ -49,6 +49,12 @@ typedef struct {
 #define IMU_ACCEL_FS_CFG      MPU6050_ACCEL_FS_8
 #define IMU_G_PER_LSB_CFG     MPU6050_G_PER_LSB_8
 #define IMU_1G_RAW           (int16_t)(1.0 / IMU_G_PER_LSB_CFG)
+#else
+#define IMU_GYRO_FS_CFG       MPU6050_GYRO_FS_2000
+#define IMU_DEG_PER_LSB_CFG   MPU6050_DEG_PER_LSB_2000
+#define IMU_ACCEL_FS_CFG      MPU6050_ACCEL_FS_16
+#define IMU_G_PER_LSB_CFG     MPU6050_G_PER_LSB_16
+#define IMU_1G_RAW           (int16_t)(1.0 / IMU_G_PER_LSB_CFG)
 #endif
 #else
 #define IMU_GYRO_FS_CFG       0

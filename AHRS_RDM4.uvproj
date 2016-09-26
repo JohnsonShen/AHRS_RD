@@ -466,6 +466,11 @@
               <FileType>1</FileType>
               <FilePath>.\LED.c</FilePath>
             </File>
+            <File>
+              <FileName>SparkFunLSM6DS3.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\SparkFunLSM6DS3.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -595,6 +600,11 @@
               <FileName>AHRSLib.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\AHRSLib\include\AHRSLib.h</FilePath>
+            </File>
+            <File>
+              <FileName>SparkFunLSM6DS3.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\SparkFunLSM6DS3.h</FilePath>
             </File>
           </Files>
         </Group>

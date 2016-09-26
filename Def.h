@@ -38,9 +38,9 @@
 /*                    Sensor Type definitions                   */
 /****************************************************************/
 
-#if defined(ADXL345) || defined(BMA020) || defined(BMA180) || defined(NUNCHACK) || defined(MMA7455) || defined(ADCACC) || defined(LIS3LV02) || defined(LSM303DLx_ACC) || defined(MPU6050) || defined(MPU6500) || defined(NUNCHUCK)
+#if defined(ADXL345) || defined(BMA020) || defined(BMA180) || defined(NUNCHACK) || defined(MMA7455) || defined(ADCACC) || defined(LIS3LV02) || defined(LSM303DLx_ACC) || defined(MPU6050) || defined(MPU6500) || defined(NUNCHUCK) || defined(LSM6DS3)
 #define STACK_ACC 1
-#if defined(MPU6050) || defined(MPU6500)
+#if defined(MPU6050) || defined(MPU6500) || defined(LSM6DS3)
 #ifndef OPTION_RC
 #define ACC_ORIENTATION(X, Y, Z)  {Sensor.rawACC[0] = X; Sensor.rawACC[1] = Y; Sensor.rawACC[2] = Z;}
 #define GYRO_ORIENTATION(X, Y, Z) {Sensor.rawGYRO[0] = X; Sensor.rawGYRO[1] = Y; Sensor.rawGYRO[2] = Z;}
@@ -68,7 +68,7 @@
 #define MAG_ORIENTATION(X, Y, Z)  {Sensor.rawMAG[0] = X; Sensor.rawMAG[1] = Y; Sensor.rawMAG[2] = Z;}
 #endif
 
-#if defined(ITG3200) || defined(L3G4200D) || defined(MPU6050) || defined(WMP)
+#if defined(ITG3200) || defined(L3G4200D) || defined(MPU6050) || defined(WMP) || defined(LSM6DS3)
 #define STACK_GYRO 1
 #else
 #define STACK_GYRO 0
