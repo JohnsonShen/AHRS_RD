@@ -35,6 +35,7 @@ SensorInit_T SensorInitState = {false,false,false};
 SensorInit_T SensorCalState  = {false,false,false};
 CAL_FLASH_STATE_T CalFlashState =  {false,false,false,0xff};
 Sensor_T Sensor;
+bool bGyroDynamicCalibrate = true;
 float GyroScale[3];
 float AccScale[3];
 float GyroOffset[3];
@@ -305,7 +306,10 @@ void SensorReadMAG()
 	MAG_ORIENTATION(rawMAG[0],rawMAG[1],rawMAG[2]);
 	//printf("Raw Mag:%d %d %d\n",Sensor.rawMAG[0], Sensor.rawMAG[1], Sensor.rawMAG[2]);
 }
-
+void ToggleGyroDynamicCalibrate()
+{
+  bGyroDynamicCalibrate = !bGyroDynamicCalibrate;
+}
 void SensorsRead(char SensorType, char interval)
 {
 #if STACK_ACC
@@ -344,9 +348,10 @@ void SensorsDynamicCalibrate(char SensorType)
 #endif
 #if STACK_GYRO
 	if(SensorType&SENSOR_GYRO&&SensorInitState.GYRO_Done) {
-		if(1/*!SensorCalState.GYRO_Done*/) {
-			if(nvtGyroCenterCalibrate()!=STATUS_GYRO_CAL_DONE)
+		if(bGyroDynamicCalibrate) {
+			if(nvtGyroCenterCalibrate()!=STATUS_GYRO_CAL_DONE) {
 				led_arm_state(LED_STATE_TOGGLE);
+      }
 			else {
 				SensorCalState.GYRO_Done = true;
 				led_arm_state(LED_STATE_OFF);

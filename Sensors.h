@@ -95,4 +95,5 @@ char GetSensorInitState(void);
 char GetSensorCalState(void);
 void DisplayCalACC(void);
 void DisplayCalGYRO(void);
+void ToggleGyroDynamicCalibrate(void);
 #endif

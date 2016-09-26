@@ -196,6 +196,11 @@ void CommandProcess()
             SetDisplayLoopTime(false);
         }
 			}
+      else if (command == 'g') {// 'g'yro dynamic
+        char token = GetChar();
+        if (token == 'd')
+          ToggleGyroDynamicCalibrate();
+      }
 			else if (command == 'm') {// Set report 'm'ode
 				char mode = GetChar();
 				if (mode == 'e') {// Report AHRS by 'e'uler angle
