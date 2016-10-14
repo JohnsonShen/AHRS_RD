@@ -471,6 +471,11 @@
               <FileType>1</FileType>
               <FilePath>.\SparkFunLSM6DS3.c</FilePath>
             </File>
+            <File>
+              <FileName>ist8310_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\ist8310_driver.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -605,6 +610,11 @@
               <FileName>SparkFunLSM6DS3.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\SparkFunLSM6DS3.h</FilePath>
+            </File>
+            <File>
+              <FileName>ist8310_driver.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\ist8310_driver.h</FilePath>
             </File>
           </Files>
         </Group>

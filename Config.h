@@ -35,5 +35,6 @@
 /************************/
 //#define HMC5883
 //#define AK8975
+//#define IST8310
 #endif //CONFIG_H_
 

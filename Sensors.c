@@ -26,6 +26,7 @@
 #include "SparkFunLSM6DS3.h"
 #include "hmc5883l.h"
 #include "ak8975.h"
+#include "ist8310_driver.h"
 #include "Sensors.h"
 #include "FlashCtrl.h"
 #include "Timer_Ctrl.h"
@@ -193,6 +194,9 @@ void SensorInitMAG()
 #ifdef AK8975
 		SensorInitState.MAG_Done = AK8975_initialize();
 #endif
+#ifdef IST8310
+		SensorInitState.MAG_Done = ist8310_Init();
+#endif
 	}
 	
 	if(SensorInitState.MAG_Done) {
@@ -302,6 +306,9 @@ void SensorReadMAG()
 #endif
 #ifdef AK8975
 	AK8975_getHeading(&rawMAG[0],&rawMAG[1], &rawMAG[2]);
+#endif
+#ifdef IST8310
+  ist8310_GetXYZ(&rawMAG[0]);
 #endif
 	MAG_ORIENTATION(rawMAG[0],rawMAG[1],rawMAG[2]);
 	//printf("Raw Mag:%d %d %d\n",Sensor.rawMAG[0], Sensor.rawMAG[1], Sensor.rawMAG[2]);
