@@ -119,7 +119,11 @@ void SensorInitACC()
 	printf("Scale: %f  %f  %f\n", AccScale[0], AccScale[1], AccScale[2]);
 	nvtSetAccScale(AccScale);
 	nvtSetAccOffset(AccOffset);
+	#if defined(MPU6050) || defined(MPU6500)
+  nvtSetAccG_PER_LSB(IMU_G_PER_LSB_CFG);
+#else
 	nvtSetAccG_PER_LSB(calcAccel(1)/*IMU_G_PER_LSB_CFG*/);
+#endif
 }
 	else {
     __disable_irq();
