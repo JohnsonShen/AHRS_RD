@@ -199,7 +199,7 @@ status_t basePage( void )
 //****************************************************************************//
 void LSM6DS3_init()
 {
-  LSM6DS3Core( I2C_MODE, /*0x68*/0x6B);
+  LSM6DS3Core( I2C_MODE, /*0x68*/0x6A);
 	//Construct with these default settings
 
 	settings.gyroEnabled = 1;  //Can be 0 or 1
