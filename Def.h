@@ -41,13 +41,8 @@
 #if defined(ADXL345) || defined(BMA020) || defined(BMA180) || defined(NUNCHACK) || defined(MMA7455) || defined(ADCACC) || defined(LIS3LV02) || defined(LSM303DLx_ACC) || defined(MPU6050) || defined(MPU6500) || defined(NUNCHUCK) || defined(LSM6DS3)
 #define STACK_ACC 1
 #if defined(MPU6050) || defined(MPU6500) || defined(LSM6DS3)
-#ifndef OPTION_RC
-#define ACC_ORIENTATION(X, Y, Z)  {Sensor.rawACC[0] = X; Sensor.rawACC[1] = Y; Sensor.rawACC[2] = Z;}
-#define GYRO_ORIENTATION(X, Y, Z) {Sensor.rawGYRO[0] = X; Sensor.rawGYRO[1] = Y; Sensor.rawGYRO[2] = Z;}
-#else
 #define ACC_ORIENTATION(X, Y, Z)  {Sensor.rawACC[0] = -X; Sensor.rawACC[1] = -Y; Sensor.rawACC[2] = Z;}
 #define GYRO_ORIENTATION(X, Y, Z) {Sensor.rawGYRO[0] = -X; Sensor.rawGYRO[1] = -Y; Sensor.rawGYRO[2] = Z;}
-#endif
 #endif
 #else
 #define STACK_ACC 0
@@ -93,10 +88,11 @@
 #endif
 #endif
 #ifdef M451
-#define IMU_UPDATE_FREQ 560
+#define IMU_UPDATE_FREQ 500
 #define DATA_FLASH_TEST_BASE 0x20000
 #else
 #define IMU_UPDATE_FRE 300
 #endif
-
+#define SYSTEM_TICK_FREQ 10000 /*10K*/
+#define TICK_FRAME_PERIOD 2
 #endif //DEF_H_
