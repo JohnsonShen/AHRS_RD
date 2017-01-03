@@ -59,7 +59,7 @@
 #define MAG_ORIENTATION(X, Y, Z)  {Sensor.rawMAG[0] = Y; Sensor.rawMAG[1] = X; Sensor.rawMAG[2] = Z;}
 #endif
 #ifdef IST8310
-#define MAG_ORIENTATION(X, Y, Z)  {Sensor.rawMAG[0] = X; Sensor.rawMAG[1] = Y; Sensor.rawMAG[2] = Z;}
+#define MAG_ORIENTATION(X, Y, Z)  {Sensor.rawMAG[0] = Y; Sensor.rawMAG[1] = X; Sensor.rawMAG[2] = Z;}
 #endif
 #else
 #define STACK_MAG 0

@@ -200,6 +200,8 @@ void SensorInitMAG()
 #endif
 #ifdef IST8310
 		SensorInitState.MAG_Done = ist8310_Init();
+    GPIO_SetMode(PC,BIT3,GPIO_MODE_OUTPUT);
+    PC3=1;
 #endif
 	}
 	
@@ -312,7 +314,9 @@ void SensorReadMAG()
 	AK8975_getHeading(&rawMAG[0],&rawMAG[1], &rawMAG[2]);
 #endif
 #ifdef IST8310
+  PC3=0;
   ist8310_GetXYZ(&rawMAG[0]);
+  PC3=1;
 #endif
 	MAG_ORIENTATION(rawMAG[0],rawMAG[1],rawMAG[2]);
 	//printf("Raw Mag:%d %d %d\n",Sensor.rawMAG[0], Sensor.rawMAG[1], Sensor.rawMAG[2]);

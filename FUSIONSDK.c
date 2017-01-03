@@ -251,15 +251,22 @@ void loop()
 {
   int current_time;
 	CommandProcess();
-	SensorsRead(SENSOR_ACC|SENSOR_GYRO/*|SENSOR_MAG|SENSOR_BARO*/,1);
-
+#if STACK_MAG
+	SensorsRead(SENSOR_ACC|SENSOR_GYRO|SENSOR_MAG/*|SENSOR_BARO*/,1);
+#else
+  SensorsRead(SENSOR_ACC|SENSOR_GYRO,1);
+#endif
   	if(ChronographRead(ChronRC)>= OUTPUT_RC_INTERVAL) {
 		SensorsDynamicCalibrate(SENSOR_GYRO|SENSOR_MAG);
 		ChronographSet(ChronRC);
 	}
  current_time = micros();
   if(GetSensorCalState()&(1<<GYRO))
-		nvtUpdateAHRS(SENSOR_ACC|SENSOR_GYRO);
+#if STACK_MAG
+		nvtUpdateAHRS(SENSOR_ACC|SENSOR_GYRO|SENSOR_MAG);
+#else
+    nvtUpdateAHRS(SENSOR_ACC|SENSOR_GYRO);
+#endif
  update_time = micros() - current_time;
 
 	if((GetFrameCount()%50)==0)

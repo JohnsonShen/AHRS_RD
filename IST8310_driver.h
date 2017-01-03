@@ -27,6 +27,8 @@
 #define IST8310_ODR_MODE            0x01    //Force mode
 #define IST8310_DATA_NUM            6       //XYZ High&Low
 
+#define IST8310_STAT_DRDY	1
+
 #ifdef IST_CROSS_AXIS_CALI
 /*---IST8310 cross-axis matrix Address-----------------danny-----*/
 #define IST8310_REG_XX_CROSS_L       0x9C   //cross axis xx low byte

@@ -61,9 +61,8 @@ bool ist8310_Init(){
     if(!connect)
       return false;
   
-    
     //ist_i2c_write(IST8310_SLA, IST8310_REG_AVGCNTL, 0x24); //average 16 times
-    ist_i2c_write(IST8310_SLA, IST8310_REG_AVGCNTL, 0x0); //average 16 times
+    ist_i2c_write(IST8310_SLA, IST8310_REG_AVGCNTL, 0x0); //average 0 times
     ist_i2c_write(IST8310_SLA, IST8310_REG_SELECTION_REG, 0xC0); //low-power mode
 #ifdef IST_CROSS_AXIS_CALI
     cross_mask[0]= 0xFF;
@@ -76,16 +75,21 @@ bool ist8310_Init(){
 
     ist8310_Crossaxis_Matrix(crossaxisinv_bitshift, crossaxis_enable);
 #endif
+		
+    //Write ODR to force mode
+    ist_i2c_write(IST8310_SLA, IST8310_REG_CNTRL1, IST8310_ODR_MODE);
     return true;
 }
 
 void ist8310_GetXYZ(int16_t *xyz){
     uint8_t raw[IST8310_DATA_NUM];
+		uint8_t data;
+		int16_t temp;
 
-    //Write ODR to force mode
-    ist_i2c_write(IST8310_SLA, IST8310_REG_CNTRL1, IST8310_ODR_MODE);
-    DelayMsec(6);  //sensor get data : 6 milliseconds
-    
+    //Check data ready 
+    ist_i2c_read(IST8310_SLA, IST8310_REG_STAT1, (uint8_t) 1, &data);
+    // if data ready, get mag data or skip.
+    if ((data & IST8310_STAT_DRDY) == IST8310_STAT_DRDY) {
     //Read 6 reg data from x high&low to z
     ist_i2c_read(IST8310_SLA, IST8310_REG_DATAX, IST8310_DATA_NUM, raw);
     //Combine High Low byte
@@ -93,6 +97,17 @@ void ist8310_GetXYZ(int16_t *xyz){
 #ifdef IST_CROSS_AXIS_CALI
     ist8310_CrossaxisTransformation(xyz);
 #endif
+				//Write ODR to force mode
+				ist_i2c_write(IST8310_SLA, IST8310_REG_CNTRL1, IST8310_ODR_MODE);
+    }
+		else
+		{
+				nvtGetSensorRawMAG(xyz);
+				temp=xyz[0];
+				xyz[0]=xyz[1];
+				xyz[1]=temp;
+		}
+
 }
 
 void ist8310_MergeHighLowData(uint8_t *raw, int16_t *xyz){
