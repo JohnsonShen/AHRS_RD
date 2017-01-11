@@ -239,6 +239,19 @@ void CommandProcess()
 					else
 						stream_mode = STREAM_START;
 				}
+				else if (mode == 'g') {
+					char value = GetChar();
+					float mean[3];
+					nvtGetGyroOffset(mean);
+					if (value == 'i') {
+						mean[2]+=0.05f;
+					}
+					else if (value == 'd') {
+						mean[2]-=0.05f;
+					}
+					nvtSetGyroOffset(mean);
+					printf("offsetZ:%f\n",mean[2]);
+				}
 			}
 		}
 		else { 
