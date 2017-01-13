@@ -38,7 +38,7 @@ bool ist8310TestConnection()
   uint8_t buffer;
 
   ist_i2c_read(IST8310_SLA, IST8310_REG_WIA, 1, &buffer);
-  if(buffer==10)
+  if((buffer==10)||(buffer==16))
   {
     return TRUE;
   }
