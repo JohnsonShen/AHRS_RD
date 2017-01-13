@@ -476,6 +476,11 @@
               <FileType>1</FileType>
               <FilePath>.\ist8310_driver.c</FilePath>
             </File>
+            <File>
+              <FileName>BMP280.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BMP280.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -615,6 +620,11 @@
               <FileName>ist8310_driver.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\ist8310_driver.h</FilePath>
+            </File>
+            <File>
+              <FileName>BMP280.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\BMP280.h</FilePath>
             </File>
           </Files>
         </Group>
