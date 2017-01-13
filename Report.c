@@ -70,32 +70,40 @@ void report_ahrs_quaternion()
 void report_sensor_raw()
 {
 	int16_t RawACC[3], RawGYRO[3], RawMAG[3];
+	uint16_t RawBARO[2];
   float dev;
 	
 	nvtGetSensorRawACC(RawACC);
 	nvtGetSensorRawGYRO(RawGYRO);
 	nvtGetSensorRawMAG(RawMAG);
+	nvtGetSensorRawBARO(RawBARO);
   dev = nvtGetGyroDeviation();
 
 	if (report_format == REPORT_FORMAT_BINARY) {
 		Serial_write((char*)RawACC, 6);
 		Serial_write((char*)RawGYRO, 6);
 		Serial_write((char*)RawMAG, 6);
+		Serial_write((char*)RawBARO, 4);
 	}
 	else if (report_format == REPORT_FORMAT_TEXT) {
 		printf("@rA:%d,%d,%d  ",RawACC[0],RawACC[1],RawACC[2]);
 		printf("@rG:%d,%d,%d  ",RawGYRO[0],RawGYRO[1],RawGYRO[2]);
 		printf("@rM:%d,%d,%d     %f\n",RawMAG[0],RawMAG[1],RawMAG[2],dev);
+		printf("@rB:%d,%d,\n",RawBARO[0], RawBARO[1]);
 	}
 }
 
 void report_sensor_calibrated()
 {
-	float CalACC[3], CalGYRO[3], CalMAG[3];
+	float CalACC[3], CalGYRO[3], CalMAG[3], CalBaro;
 	nvtGetCalibratedACC(CalACC);
 	nvtGetCalibratedGYRO(CalGYRO);
 	nvtGetCalibratedMAG(CalMAG);
-
+#if STACK_BARO
+	CalBaro = GetBaroAltitude();
+#else
+	CalBaro = 0;
+#endif
 	if (report_format == REPORT_FORMAT_BINARY) {
 		Serial_write((char*)CalACC, 12);
 		Serial_write((char*)CalGYRO, 12);
@@ -105,6 +113,7 @@ void report_sensor_calibrated()
 		printf("@cA:%f,%f,%f  ",CalACC[0],CalACC[1],CalACC[2]);
 		printf("@cG:%f,%f,%f  ",CalGYRO[0],CalGYRO[1],CalGYRO[2]);
 		printf("@cM:%f,%f,%f  \n",CalMAG[0],CalMAG[1],CalMAG[2]);
+		printf("@cB:%f\n",CalBaro);
 	}
 }
 

@@ -32,6 +32,9 @@
 #include "Timer_Ctrl.h"
 #include "LED.h"
 #include "Report.h"
+#ifdef BMP280
+#include "BMP280.h"
+#endif
 SensorInit_T SensorInitState = {false,false,false};
 SensorInit_T SensorCalState  = {false,false,false};
 CAL_FLASH_STATE_T CalFlashState =  {false,false,false,0xff};
@@ -44,6 +47,14 @@ float AccOffset[3];
 float MagCalMatrix[10];
 #ifdef HMC5883
 float magCal[3];
+#endif
+#if STACK_BARO
+int BaroDoTick;
+int BaroDoState;
+uint16_t calibratingB = 0;
+static float asl;     
+static float aslRaw; 
+static float aslAlpha               = 0.91;
 #endif
 void temperatureRead(float *temperatureOut)
 {
@@ -200,8 +211,6 @@ void SensorInitMAG()
 #endif
 #ifdef IST8310
 		SensorInitState.MAG_Done = ist8310_Init();
-    GPIO_SetMode(PC,BIT3,GPIO_MODE_OUTPUT);
-    PC3=1;
 #endif
 	}
 	
@@ -257,6 +266,52 @@ void SensorInitMAG()
 		printf("MAG connect      - [FAIL]\n");
   }
 }
+
+void SensorInitBARO()
+{
+#ifdef BMP085
+	SensorInitState.BARO_Done = begin(BMP085_ULTRAHIGHRES);
+	if(SensorInitState.BARO_Done)
+		SensorInitState.BARO_BRAND = BMP085;
+#endif
+#ifdef BMP280
+		SensorInitState.BARO_Done = Int_BMP280();
+		if(SensorInitState.BARO_Done) {
+			SensorInitState.BARO_BRAND = BMP280;
+			printf("Baro Sensor - [BMP280]\n"); 
+		}
+		else 
+			printf("Baro Sensor - [NA]\n"); 
+#endif
+		
+	if(SensorInitState.BARO_Done) {
+		switch (SensorInitState.BARO_BRAND) {
+#ifdef BMP085
+			case BMP085:
+			TriggerRawPressure();
+			DelayMsec(24);
+			SensorInitState.BARO_BasePressure = readRawPressure();
+			TriggerRawTemperature();
+			BaroDoTick = getTickCount() + 15;
+			BaroDoState = 0;
+			Sensor.BaroInfo.baroPressureSum = 0;
+			break;
+#endif
+#ifdef BMP280			
+			case BMP280:
+			{
+				bool isBMP280TestPassed = BMP280SelfTest();
+				printf("Baro Test Passed:%d\n",isBMP280TestPassed);
+			}
+			break;
+			#endif	
+		}
+		printf("BARO connect - [OK]\n");
+	}
+	else
+		printf("BARO connect - [FAIL]\n");
+}
+
 void SensorsInit()
 {
 #if STACK_ACC
@@ -268,6 +323,9 @@ void SensorsInit()
 #if STACK_MAG
 	SensorInitMAG();
 #endif
+#if STACK_BARO
+	SensorInitBARO();
+#endif	
 }
 
 /* Sensors Read */
@@ -314,12 +372,80 @@ void SensorReadMAG()
 	AK8975_getHeading(&rawMAG[0],&rawMAG[1], &rawMAG[2]);
 #endif
 #ifdef IST8310
-  PC3=0;
   ist8310_GetXYZ(&rawMAG[0]);
-  PC3=1;
 #endif
 	MAG_ORIENTATION(rawMAG[0],rawMAG[1],rawMAG[2]);
 	//printf("Raw Mag:%d %d %d\n",Sensor.rawMAG[0], Sensor.rawMAG[1], Sensor.rawMAG[2]);
+}
+
+#if STACK_BARO
+void Baro_Common() {
+	static float baroHistTab[BARO_TAB_SIZE];
+	static uint8_t baroHistIdx;
+	static uint8_t baroValidCount=0;
+	static bool baroHistValid=false;
+	uint8_t indexplus1 = (baroHistIdx + 1);
+
+	if (indexplus1 == BARO_TAB_SIZE) {
+		indexplus1 = 0;
+	}
+	baroHistTab[baroHistIdx] = Sensor.BaroInfo.baroPressure;
+	if(baroHistValid) {
+		Sensor.BaroInfo.baroPressureSum += baroHistTab[baroHistIdx];
+		Sensor.BaroInfo.baroPressureSum -= baroHistTab[indexplus1];
+		//printf("P:%d, PD:%d, PS:%d, T:%d, Alt:%f\n",Sensor.BaroInfo.baroPressure,baroHistTab[baroHistIdx]-baroHistTab[indexplus1],Sensor.BaroInfo.baroPressureSum,Sensor.BaroInfo.baroTemperature,GetBaroAltitude());
+	}
+	else if(baroValidCount++>3) {
+		baroHistValid = true;
+		Sensor.BaroInfo.baroPressureSum += baroHistTab[baroHistIdx];
+	}
+
+	baroHistIdx = indexplus1;  
+}
+#endif
+bool SensorReadBARO()
+{
+#if STACK_BARO
+#ifdef BMP085
+	if(SensorInitState.BARO_BRAND==BMP085) {
+		if((getTickCount()>BaroDoTick)) {
+			BaroDoTick = getTickCount() + 6;
+			if(BaroDoState==0) {
+				Sensor.rawBARO[1] = Sensor.BaroInfo.baroTemperature =  readRawTemperature();// - (28262-3534);
+				TriggerRawPressure();
+				Baro_Common();
+				BaroDoTick = getTickCount() + 21;
+				BaroDoState = 1;
+				
+				return false;
+			}
+			else {
+				Sensor.rawBARO[0] = readRawPressure() - SensorInitState.BARO_BasePressure;
+				Sensor.BaroInfo.baroPressure = readPressure();
+				TriggerRawTemperature();
+				BaroDoState = 0;
+				
+				return true;
+			}
+		}
+		else
+			return false;
+	}
+	else 
+#endif
+		static float temperature,pressure,BaroAlt;
+		bool beUpdate;
+		
+		beUpdate = BMP280_GetData(&pressure, &temperature, &BaroAlt);;//TBM
+		if(beUpdate) {
+			Sensor.rawBARO[0] = Sensor.BaroInfo.baroPressure = pressure;
+			Sensor.rawBARO[1] = Sensor.BaroInfo.baroTemperature = temperature;
+			Baro_Common();
+		}
+		return beUpdate;
+#else
+	return false;
+#endif
 }
 void ToggleGyroDynamicCalibrate()
 {
@@ -327,6 +453,12 @@ void ToggleGyroDynamicCalibrate()
 }
 void SensorsRead(char SensorType, char interval)
 {
+#if STACK_BARO
+	if(SensorType&SENSOR_BARO&&SensorInitState.BARO_Done) {
+		if(SensorReadBARO())
+			nvtInputSensorRawBARO(&Sensor.rawBARO[0]);
+	}
+#endif
 #if STACK_ACC
 	if(SensorType&SENSOR_ACC&&SensorInitState.ACC_Done) {
 		SensorReadACC();
@@ -408,3 +540,62 @@ char GetSensorCalState()
 	CalState = (((SensorCalState.ACC_Done<<ACC))|((SensorCalState.GYRO_Done<<GYRO))|((SensorCalState.MAG_Done<<MAG)));
 	return CalState;
 }
+int32_t GetBaroBasePressure()
+{
+#if STACK_BARO
+	return SensorInitState.BARO_BasePressure;
+#else
+	return 0;
+#endif
+}
+float GetBaroAltitude()
+{
+#if STACK_BARO
+	return Sensor.Altitude;
+#else
+	return 0;
+#endif
+}
+#if STACK_BARO
+void SetBaroAltitude(float alt)
+{
+	Sensor.Altitude = alt;
+}
+BaroInfo_T* GetBaroInfo()
+{
+	return &Sensor.BaroInfo;
+}
+#endif
+#if STACK_BARO
+void SetCalibratingB(uint8_t c)
+{
+	calibratingB = c;
+}
+
+void AltitudeUpdate(void)  
+{
+	int32_t BaroAlt;
+	BaroInfo_T *BaroInfo;
+	static float baroGroundTemperatureScale=0,logBaroGroundPressureSum=0;
+
+	BaroInfo = GetBaroInfo();
+  
+	if(calibratingB > 0) {
+		logBaroGroundPressureSum = log(BaroInfo->baroPressureSum);
+#ifdef BMP085
+		baroGroundTemperatureScale = (readTemperature(BaroInfo->baroTemperature)*100 + 27315) *  29.271267f;
+#else
+		baroGroundTemperatureScale = (BaroInfo->baroTemperature*100 + 27315) *  29.271267f;
+#endif
+		calibratingB--;
+	}
+
+	BaroAlt = ( logBaroGroundPressureSum - log(BaroInfo->baroPressureSum) ) * baroGroundTemperatureScale;
+
+	aslRaw = (float)BaroAlt/100;
+
+	asl = asl * aslAlpha + aslRaw * (1 - aslAlpha);
+	SetBaroAltitude(asl);
+
+}
+#endif

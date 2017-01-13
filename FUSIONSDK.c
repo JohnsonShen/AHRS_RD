@@ -152,7 +152,7 @@ void setup()
 	I2C_Init();
 	FlashInit();
 	nvtAHRSInit();
-  nvtSetGyroDeviationTH(50);
+  nvtSetGyroDeviationTH(10);
 	SensorsInit();
   TIMER_Init();
 	DisplayCommandList();
@@ -265,9 +265,9 @@ void loop()
   int current_time;
 	CommandProcess();
 #if STACK_MAG
-	SensorsRead(SENSOR_ACC|SENSOR_GYRO|SENSOR_MAG/*|SENSOR_BARO*/,1);
+	SensorsRead(SENSOR_ACC|SENSOR_GYRO|SENSOR_MAG|SENSOR_BARO,1);
 #else
-  SensorsRead(SENSOR_ACC|SENSOR_GYRO,1);
+  SensorsRead(SENSOR_ACC|SENSOR_GYRO|SENSOR_BARO,1);
 #endif
   	if(ChronographRead(ChronRC)>= OUTPUT_RC_INTERVAL) {
 		SensorsDynamicCalibrate(SENSOR_GYRO|SENSOR_MAG);
@@ -276,9 +276,12 @@ void loop()
  current_time = micros();
   if(GetSensorCalState()&(1<<GYRO))
 #if STACK_MAG
-		nvtUpdateAHRS(SENSOR_ACC|SENSOR_GYRO|SENSOR_MAG);
+		nvtUpdateAHRS(SENSOR_ACC|SENSOR_GYRO|SENSOR_MAG|SENSOR_BARO);
 #else
-    nvtUpdateAHRS(SENSOR_ACC|SENSOR_GYRO);
+		nvtUpdateAHRS(SENSOR_ACC|SENSOR_GYRO|SENSOR_BARO);
+#endif
+#if STACK_BARO	
+		AltitudeUpdate();
 #endif
  update_time = micros() - current_time;
 

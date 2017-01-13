@@ -19,16 +19,32 @@
 #define _SENSORS_H
 #include "Def.h"
 
+#if STACK_BARO
+typedef struct {
+	float baroPressure;
+	float baroTemperature;
+	float baroPressureSum;
+}BaroInfo_T;
+#endif
+
 typedef struct {
 	int16_t rawACC[3];
 	int16_t rawGYRO[3];
 	int16_t rawMAG[3];
+	int16_t rawBARO[2];
+#if STACK_BARO
+	BaroInfo_T BaroInfo;
+#endif
+	float Altitude;
 }Sensor_T;
 
 typedef struct {
 	bool ACC_Done;
 	bool GYRO_Done;
 	bool MAG_Done;
+	bool BARO_Done;
+	uint8_t BARO_BRAND;
+	int32_t BARO_BasePressure;
 }SensorInit_T;
 typedef struct {
 	bool ACC_FLASH;
@@ -96,4 +112,12 @@ char GetSensorCalState(void);
 void DisplayCalACC(void);
 void DisplayCalGYRO(void);
 void ToggleGyroDynamicCalibrate(void);
+#if STACK_BARO
+int32_t GetBaroBasePressure(void);
+float GetBaroAltitude(void);
+void SetBaroAltitude(float alt);
+BaroInfo_T* GetBaroInfo(void);
+void SetCalibratingB(uint8_t c);
+void AltitudeUpdate(void);
+#endif
 #endif

@@ -71,6 +71,14 @@
 #else
 #define STACK_GYRO 0
 #endif
+
+#if defined(BMP085) || defined(MS5611) || defined(BMP280)
+#define STACK_BARO 1
+#define BARO_TAB_SIZE 21
+#else
+#define STACK_BARO 0
+#endif
+
 #define OUTPUT_RC_INTERVAL 20 //milliseconds,50Hz
 #define SYSTEM_CLOCK 72000000
 

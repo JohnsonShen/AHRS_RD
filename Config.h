@@ -36,5 +36,11 @@
 //#define HMC5883
 //#define AK8975
 //#define IST8310
+/************************/
+/*       BARO           */
+/************************/
+//#define BMP085 0
+//#define MS5611 1
+//#define BMP280 2
 #endif //CONFIG_H_
 
