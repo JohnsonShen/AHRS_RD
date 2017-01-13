@@ -406,6 +406,13 @@ status_t begin()
 	//Return WHO AM I reg  //Not no mo!
 	readRegister(&result, LSM6DS3_ACC_GYRO_WHO_AM_I_REG);
 
+	#if 1//for clean robot
+	writeRegister(LSM6DS3_ACC_GYRO_CTRL2_G, 0x80);// ODR = 1.66kHz, FS = +/- 245 dps
+	writeRegister(LSM6DS3_ACC_GYRO_CTRL4_C, 0x02);// LPF1 Enable
+	writeRegister(LSM6DS3_ACC_GYRO_CTRL6_G, 0x02);// LPF1 Cutoff = 168Hz
+	writeRegister(LSM6DS3_ACC_GYRO_CTRL7_G, 0x00);// Gyro High Performance Mode Enable	
+	#endif
+		
 	return returnError;
 }
 
@@ -572,6 +579,9 @@ float calcGyro( int16_t input )
 	}
 
 	output = (float)input * 4.375f * (gyroRangeDivisor) / 1000;
+#if 1 //for clean robot
+	output = (float)input*8.75f/1000;
+#endif
 	return output;
 }
 
