@@ -481,6 +481,16 @@
               <FileType>1</FileType>
               <FilePath>.\BMP280.c</FilePath>
             </File>
+            <File>
+              <FileName>descriptors.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\descriptors.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd_audio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\usbd_audio.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -535,6 +545,16 @@
               <FileName>arm_cortexM4lf_math.lib</FileName>
               <FileType>4</FileType>
               <FilePath>..\..\..\Library\CMSIS\Lib\ARM\arm_cortexM4lf_math.lib</FilePath>
+            </File>
+            <File>
+              <FileName>spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Library\StdDriver\src\spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>usbd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Library\StdDriver\src\usbd.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -620,11 +640,6 @@
               <FileName>ist8310_driver.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\ist8310_driver.h</FilePath>
-            </File>
-            <File>
-              <FileName>BMP280.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\BMP280.h</FilePath>
             </File>
           </Files>
         </Group>

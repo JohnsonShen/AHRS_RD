@@ -37,6 +37,9 @@
 #include "Report.h"
 #include "Calibrate.h"
 #include "LED.h"
+#if UAC_EN
+#include "usbd_audio.h"
+#endif
 #define MAG_INTERVAL 4
 int update_time;
 void setupSystemClock()
@@ -51,6 +54,14 @@ void setupSystemClock()
 
 	/* Switch HCLK clock source to HIRC */
 	CLK_SetHCLK(CLK_CLKSEL0_HCLKSEL_HIRC, CLK_CLKDIV0_HCLK(1));
+
+#if UAC_EN
+	/* Enable external XTAL 12MHz clock */
+	CLK_EnableXtalRC(CLK_PWRCTL_HXTEN_Msk);
+
+	/* Waiting for external XTAL clock ready */
+	CLK_WaitClockReady(CLK_STATUS_HXTSTB_Msk);
+#endif
 
 	/* Set core clock as PLL_CLOCK from PLL and SysTick source to HCLK/2*/
 	CLK_SetCoreClock(SYSTEM_CLOCK);
@@ -87,7 +98,11 @@ void setupUART()
 	/* Peripheral clock source */
 	CLK_SetModuleClock(UART0_MODULE, CLK_CLKSEL1_UARTSEL_HIRC, CLK_CLKDIV0_UART(1));
 	/* Set PD multi-function pins for UART0 RXD, TXD */
+#if CODEC_EN
+	SYS->GPD_MFPL = SYS_GPD_MFPL_PD6MFP_UART0_RXD | SYS_GPD_MFPL_PD1MFP_UART0_TXD;
+#else
 	SYS->GPD_MFPL = SYS_GPD_MFPL_PD0MFP_UART0_RXD | SYS_GPD_MFPL_PD1MFP_UART0_TXD;
+#endif
 	/* Reset UART module */
 	SYS_ResetModule(UART0_RST);
 
@@ -156,6 +171,9 @@ void setup()
 	SensorsInit();
   TIMER_Init();
 	DisplayCommandList();
+#if UAC_EN	
+	UAC_Init();
+#endif	
 }
 void CommandProcess()
 {
@@ -291,6 +309,14 @@ void loop()
 	IncFrameCount(1);
 if((GetFrameCount()%12)==0)
 		UpdateLED();
+
+#if CODEC_EN
+	/* Adjust codec sampling rate to synch with USB. The adjustment range is +-0.005% */
+	AdjFreq();
+
+	/* Set audio volume according USB volume control settings */
+	VolumnControl();
+#endif
 }
 
 /*-----------------------------------------------------------------------------------*/

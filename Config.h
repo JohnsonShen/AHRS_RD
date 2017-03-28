@@ -42,5 +42,11 @@
 //#define BMP085 0
 //#define MS5611 1
 //#define BMP280 2
+/************************/
+/*       USB           */
+/************************/
+#define UAC_EN 0
+#define CODEC_EN 0
+
 #endif //CONFIG_H_
 
