@@ -129,6 +129,9 @@ void SensorCalibration()
 		MagCalibration();
 		UpdateFlashCal(SENSOR_MAG, false);
 	}
+  else if(calibration_sensor=='d') { // Do 'd'irection calibration 
+		nvtResetDirection();
+	}
 	else                                                        // Fail doing calibration 
 		CalibrationFail();
 	TIMER_Enable(true);
