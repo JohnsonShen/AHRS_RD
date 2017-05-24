@@ -55,6 +55,7 @@ void report_ahrs_quaternion()
 {
 	float Quaternion[4];
 	nvtGetQuaternion(Quaternion);
+  nvtPerformanceOverAccuracy(true);
 	
 	if (report_format == REPORT_FORMAT_BINARY) {
     Serial_write(&Start, 1);
@@ -64,7 +65,8 @@ void report_ahrs_quaternion()
 		Serial_write((char*)&Quaternion[3], 4);
 	}
 	else if (report_format == REPORT_FORMAT_TEXT) {
-		printf("@Quaternion:%f,%f,%f,%f\n",Quaternion[0],Quaternion[1],Quaternion[2],Quaternion[3]);
+		printf("@Quaternion:%f,%f,%f,%f,%f\n",Quaternion[0],Quaternion[1],Quaternion[2],Quaternion[3],
+    Quaternion[0]*Quaternion[0]+Quaternion[1]*Quaternion[1]+Quaternion[2]*Quaternion[2]+Quaternion[3]*Quaternion[3]);
 	}
 }
 void report_sensor_raw()
@@ -137,4 +139,10 @@ void report_sensors()
 }
 void report_calibration_factor()
 {
+}
+void DisplayFusionParam()
+{
+  float Proportional, Integral;
+  nvtGetFusionParam(&Proportional, &Integral);
+  printf("@PI:%f,%f\n",Proportional,Integral);
 }

@@ -175,6 +175,7 @@ void setup()
 	UAC_Init();
 #endif	
 }
+
 void CommandProcess()
 {
 	// Read incoming control messages
@@ -213,6 +214,8 @@ void CommandProcess()
           else if (token == 'f')
             SetDisplayLoopTime(false);
         }
+        else if (token == 'f')
+          DisplayFusionParam();
 			}
       else if (command == 'g') {// 'g'yro dynamic
         char token = GetChar();
@@ -241,6 +244,34 @@ void CommandProcess()
 				}
 				else if (format == 't') {// Report 't'ext format
 					report_format = REPORT_FORMAT_TEXT;
+				}
+        else if (format == 'p') {
+					char value = GetChar();
+					float Proportional, Integral;
+					nvtGetFusionParam(&Proportional, &Integral);
+					if (value == 'i') {
+						Proportional+=0.1f;
+					}
+					else if (value == 'd') {
+            if(Proportional>=0.1f)
+              Proportional-=0.1f;
+					}
+					nvtSetFusionParam(Proportional, Integral);
+					printf("FusionP:%f\n",Proportional);
+				}
+        else if (format == 'i') {
+					char value = GetChar();
+					float Proportional, Integral;
+					nvtGetFusionParam(&Proportional, &Integral);
+					if (value == 'i') {
+						Integral+=0.01f;
+					}
+					else if (value == 'd') {
+            if(Integral>=0.01f)
+              Integral-=0.01f;
+					}
+					nvtSetFusionParam(Proportional, Integral);
+					printf("FusionI:%f\n",Integral);
 				}
 			}
 			else if (command == 's') {// 's'tream output control

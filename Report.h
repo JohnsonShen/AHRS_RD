@@ -41,4 +41,5 @@ extern char report_format;
 extern char stream_mode;
 void report_sensors(void);
 void report_status(void);
+void DisplayFusionParam(void);
 #endif
