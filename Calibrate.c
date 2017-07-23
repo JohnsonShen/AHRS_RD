@@ -49,7 +49,7 @@ void AccCalibration()
 			SensorsRead(SENSOR_ACC|SENSOR_GYRO|SENSOR_BARO,1);
 			nvtUpdateAHRS(SENSOR_ACC);
 		}
-		report_ahrs_euler();
+		//report_ahrs_euler();
 		nvtCalACCInit();
 	}
 	
