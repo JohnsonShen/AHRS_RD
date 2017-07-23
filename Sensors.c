@@ -44,6 +44,7 @@ float GyroScale[3];
 float AccScale[3];
 float GyroOffset[3];
 float AccOffset[3];
+float AccRotate[9];
 float MagCalMatrix[10];
 #ifdef HMC5883
 float magCal[3];
@@ -74,6 +75,9 @@ void DisplayCalACC()
 {
   printf("ACC Offset: %f  %f  %f\n", AccOffset[0], AccOffset[1], AccOffset[2]);
   printf("ACC Scale: %f  %f  %f\n", AccScale[0], AccScale[1], AccScale[2]);
+	printf("M[0][1][2]: %f %f %f\n", AccRotate[0], AccRotate[1], AccRotate[2]);
+	printf("M[3][4][5]: %f %f %f\n", AccRotate[3], AccRotate[4], AccRotate[5]);
+	printf("M[6][7][8]: %f %f %f\n", AccRotate[6], AccRotate[7], AccRotate[8]);
 }
 void DisplayCalGYRO()
 {
@@ -114,6 +118,15 @@ void SensorInitACC()
 			AccScale[0]  = Cal[3];
 			AccScale[1]  = Cal[4];
 			AccScale[2]  = Cal[5];
+			AccRotate[0] = Cal[6];
+			AccRotate[1] = Cal[7];
+			AccRotate[2] = Cal[9];
+			AccRotate[3] = Cal[9];
+			AccRotate[4] = Cal[10];
+			AccRotate[5] = Cal[11];
+			AccRotate[6] = Cal[12];
+			AccRotate[7] = Cal[13];
+			AccRotate[8] = Cal[14];
 			printf("ACC calibration from - [FLASH]\n");
 			
 		}
@@ -124,12 +137,25 @@ void SensorInitACC()
 			AccScale[0] = IMU_G_PER_LSB_CFG;
 			AccScale[1] = IMU_G_PER_LSB_CFG;
 			AccScale[2] = IMU_G_PER_LSB_CFG;
+			AccRotate[0] = 1;
+			AccRotate[1] = 0;
+			AccRotate[2] = 0;
+			AccRotate[3] = 0;
+			AccRotate[4] = 1;
+			AccRotate[5] = 0;
+			AccRotate[6] = 0;
+			AccRotate[7] = 0;
+			AccRotate[8] = 1;
 			printf("ACC calibration from - [DEFAULT]\n");
 		}
 	printf("Offset: %f  %f  %f\n", AccOffset[0], AccOffset[1], AccOffset[2]);
 	printf("Scale: %f  %f  %f\n", AccScale[0], AccScale[1], AccScale[2]);
+	printf("M[0][1][2]: %f %f %f\n", AccRotate[0], AccRotate[1], AccRotate[2]);
+	printf("M[3][4][5]: %f %f %f\n", AccRotate[3], AccRotate[4], AccRotate[5]);
+	printf("M[6][7][8]: %f %f %f\n", AccRotate[6], AccRotate[7], AccRotate[8]);
 	nvtSetAccScale(AccScale);
 	nvtSetAccOffset(AccOffset);
+	nvtSetAccRotate(AccRotate);
 	#if defined(MPU6050) || defined(MPU6500)
   nvtSetAccG_PER_LSB(IMU_G_PER_LSB_CFG);
 #else

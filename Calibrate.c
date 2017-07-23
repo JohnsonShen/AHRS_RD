@@ -35,14 +35,23 @@ void AccCalibration()
 	const char calibration_done = 'd';
 	char side = atoi(&direction);
 	signed char status;
+	int i;
 	
 	if (direction == 'z')
 		side = 0;
 	else
 		side = atoi(&direction);
 	
-	if ((direction == '0')||(direction == 'z'))
+	if ((direction == '0')||(direction == 'z')) {
+		nvtResetDirection();
+		nvtSetCalDataDefault(SENSOR_ACC);
+		for(i=0; i<5000; i++) {
+			SensorsRead(SENSOR_ACC|SENSOR_GYRO|SENSOR_BARO,1);
+			nvtUpdateAHRS(SENSOR_ACC);
+		}
+		report_ahrs_euler();
 		nvtCalACCInit();
+	}
 	
 	do {
 		DelayMsec(1);
