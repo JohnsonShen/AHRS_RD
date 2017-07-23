@@ -323,7 +323,7 @@ void loop()
 		ChronographSet(ChronRC);
 	}
  current_time = micros();
-  if(GetSensorCalState()&(1<<GYRO))
+  //if(GetSensorCalState()&(1<<GYRO))
 #if STACK_MAG
 		nvtUpdateAHRS(SENSOR_ACC|SENSOR_GYRO|SENSOR_MAG|SENSOR_BARO);
 #else
