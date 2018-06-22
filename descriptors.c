@@ -296,7 +296,7 @@ const uint8_t *gpu8UsbString[4] =
     gu8StringSerial
 };
 
-S_USBD_INFO_T gsInfo =
+const S_USBD_INFO_T gsInfo =
 {
     gu8DeviceDescriptor,
     gu8ConfigDescriptor,
